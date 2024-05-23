@@ -3,7 +3,7 @@ slug: umami-analytics
 type: plugin
 # TODO: update on initialization
 version: 0.1.0
-description: Analytics for Umami.Is
+description: Grav plugin for adding Umami Analytics to your site
 icon: plug
 author:
   name: Crabston GmbH

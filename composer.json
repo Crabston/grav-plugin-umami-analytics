@@ -1,7 +1,7 @@
 {
   "name": "crabston/umami-analytics",
   "type": "grav-plugin",
-  "description": "Analytics for Umami.Is",
+  "description": "Grav plugin for adding Umami Analytics to your site",
   "keywords": ["plugin"],
   "homepage": "https://github.com/Crabston/grav-plugin-umami-analytics",
   "license": "MIT",
