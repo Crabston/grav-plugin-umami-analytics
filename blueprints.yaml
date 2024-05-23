@@ -12,7 +12,7 @@ homepage: https://github.com/Crabston/grav-plugin-umami-analytics
 demo: https://grav.demo.crabston.dev
 keywords: grav, plugin, analytics, umami
 bugs: https://github.com/Crabston/grav-plugin-umami-analytics/issues
-docs: https://github.com/Crabston/grav-plugin-umami-analytics/blob/develop/README.md
+docs: https://github.com/Crabston/grav-plugin-umami-analytics/blob/main/README.md
 license: MIT
 
 dependencies:
