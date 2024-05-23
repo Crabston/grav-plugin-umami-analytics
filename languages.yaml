@@ -2,7 +2,7 @@ en:
   PLUGIN_UMAMI_ANALYTICS:
     SERVER_URL:
       LABEL: Server URL
-      HELP: The URL of your Umami server
+      HELP: The Hostname of your Umami Analytics instance
     WEBSITE_ID:
       LABEL: Website ID
       HELP: The ID of your website
