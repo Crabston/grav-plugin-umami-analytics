@@ -1,8 +1,7 @@
 name: Umami Analytics
 slug: umami-analytics
 type: plugin
-# TODO: update on initialization
-version: 0.1.0
+version: 1.0.0
 description: Grav plugin for adding Umami Analytics to your site
 icon: bar-chart
 author:

@@ -1,5 +1,5 @@
-# v0.1.0
+# v1.0.0
 ##  05/23/2024
 
 1. [](#new)
-    * ChangeLog started...
+    * Initial release
