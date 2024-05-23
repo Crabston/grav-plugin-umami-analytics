@@ -39,8 +39,8 @@ form:
       size: medium
       label: PLUGIN_UMAMI_ANALYTICS.SERVER_URL.LABEL
       description: PLUGIN_UMAMI_ANALYTICS.SERVER_URL.HELP
-      placeholder: 'https://us.umami.is/script.js'
-      default: 'https://us.umami.is/script.js'
+      placeholder: 'https://us.umami.is'
+      default: 'https://us.umami.is'
       validate:
         required: true
 
