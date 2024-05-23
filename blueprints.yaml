@@ -1,0 +1,42 @@
+name: Umami Analytics
+slug: umami-analytics
+type: plugin
+# TODO: update on initialization
+version: 0.1.0
+description: Analytics for Umami.Is
+icon: plug
+author:
+  name: Crabston GmbH
+  email: contact@crabston.dev
+  url: https://crabston.dev
+homepage: https://github.com/Crabston/grav-plugin-umami-analytics
+demo: https://grav.demo.crabston.dev
+keywords: grav, plugin, analytics, umami
+bugs: https://github.com/Crabston/grav-plugin-umami-analytics/issues
+docs: https://github.com/Crabston/grav-plugin-umami-analytics/blob/develop/README.md
+license: MIT
+
+dependencies:
+  - { name: grav, version: '>=1.6.0' }
+
+form:
+  validation: loose
+  fields:
+    enabled:
+      type: toggle
+      label: PLUGIN_ADMIN.PLUGIN_STATUS
+      highlight: 1
+      default: 0
+      options:
+        1: PLUGIN_ADMIN.ENABLED
+        0: PLUGIN_ADMIN.DISABLED
+      validate:
+        type: bool
+    server_url:
+      type: text
+      label: PLUGIN_UMAMI_ANALYTICS.SERVER_URL.LABEL
+      help: PLUGIN_UMAMI_ANALYTICS.SERVER_URL.HELP
+    website_id:
+      type: text
+      label: PLUGIN_UMAMI_ANALYTICS.WEBSITE_ID.LABEL
+      help: PLUGIN_UMAMI_ANALYTICS.WEBSITE_ID.HELP
