@@ -42,6 +42,7 @@ form:
       default: 'https://us.umami.is'
       validate:
         required: true
+        #pattern: ''
 
     website_id:
       type: text
@@ -60,6 +61,8 @@ form:
       help: PLUGIN_UMAMI_ANALYTICS.HOST_URL.HELP
       placeholder: 'https://stats.mywebsite.com'
       default: ''
+      validate:
+        #pattern: ''
 
     disable_auto_track:
       type: toggle
@@ -78,5 +81,4 @@ form:
       size: large
       label: PLUGIN_UMAMI_ANALYTICS.DOMAINS.LABEL
       help: PLUGIN_UMAMI_ANALYTICS.DOMAINS.HELP
-      yaml: true
       placeholder: 'example.com,your-domain.tld'
