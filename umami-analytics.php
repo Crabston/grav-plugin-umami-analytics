@@ -15,7 +15,7 @@ class UmamiAnalyticsPlugin extends Plugin
 	 * @var string serverUrl
 	 * @var string websiteId
 	 */
-	protected $serverUrl;
+	protected $scriptSrc;
 	protected $websiteId;
 
 	/**
@@ -56,7 +56,7 @@ class UmamiAnalyticsPlugin extends Plugin
             return;
         }
 
-	    $this->serverUrl = trim($this->config->get('plugins.umami-analytics.server_url', ''));
+	    $this->scriptSrc = trim($this->config->get('plugins.umami-analytics.script_src', 'https://us.umami.is'));
 	    $this->websiteId = trim($this->config->get('plugins.umami-analytics.website_id', ''));
 
 	    // Don't proceed if there is no website ID
@@ -77,7 +77,7 @@ class UmamiAnalyticsPlugin extends Plugin
 	public function onOutputGenerated(): void {
 		$code = implode(PHP_EOL, [
 			'<!-- Umami Analytics Script -->',
-			"<script defer src=\"{$this->serverUrl}/script.js\" data-website-id=\"{$this->websiteId}\"></script>",
+			"<script defer src=\"{$this->scriptSrc}/script.js\" data-website-id=\"{$this->websiteId}\"></script>",
 		]);
 
 		$content = preg_replace('/<head\s?\S*?(>)/si', "$0\n\n{$code}\n", $this->grav->output);

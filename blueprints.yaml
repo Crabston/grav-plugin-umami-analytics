@@ -33,11 +33,11 @@ form:
       validate:
         type: bool
 
-    server_url:
+    script_src:
       type: url
       size: medium
-      label: PLUGIN_UMAMI_ANALYTICS.SERVER_URL.LABEL
-      description: PLUGIN_UMAMI_ANALYTICS.SERVER_URL.HELP
+      label: PLUGIN_UMAMI_ANALYTICS.SCRIPT_SRC.LABEL
+      description: PLUGIN_UMAMI_ANALYTICS.SCRIPT_SRC.DESCRIPTION
       placeholder: 'https://us.umami.is'
       default: 'https://us.umami.is'
       validate:
@@ -47,7 +47,7 @@ form:
       type: text
       size: medium
       label: PLUGIN_UMAMI_ANALYTICS.WEBSITE_ID.LABEL
-      description: PLUGIN_UMAMI_ANALYTICS.WEBSITE_ID.HELP
+      description: PLUGIN_UMAMI_ANALYTICS.WEBSITE_ID.DESCRIPTION
       placeholder: '76e4f3db-8fec-47ad-82ba-f5O21cOac915'
       validate:
         required: true
