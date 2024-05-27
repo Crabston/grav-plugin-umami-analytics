@@ -51,3 +51,32 @@ form:
       placeholder: '76e4f3db-8fec-47ad-82ba-f5O21cOac915'
       validate:
         required: true
+        pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+
+    host_url:
+      type: url
+      size: medium
+      label: PLUGIN_UMAMI_ANALYTICS.HOST_URL.LABEL
+      help: PLUGIN_UMAMI_ANALYTICS.HOST_URL.HELP
+      placeholder: 'https://stats.mywebsite.com'
+      default: ''
+
+    auto_track:
+      type: toggle
+      label: PLUGIN_UMAMI_ANALYTICS.AUTO_TRACK.LABEL
+      help: PLUGIN_UMAMI_ANALYTICS.AUTO_TRACK.HELP
+      highlight: "true"
+      default: "true"
+      options:
+        "true": PLUGIN_ADMIN.ENABLED
+        "false": PLUGIN_ADMIN.DISABLED
+      validate:
+        type: bool
+
+    domains:
+      type: text
+      size: large
+      label: PLUGIN_UMAMI_ANALYTICS.DOMAINS.LABEL
+      help: PLUGIN_UMAMI_ANALYTICS.DOMAINS.HELP
+      yaml: true
+      placeholder: 'example.com,your-domain.tld'
