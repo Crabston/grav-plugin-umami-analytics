@@ -12,16 +12,16 @@ class UmamiAnalyticsPlugin extends Plugin
 {
 
 	/**
-	 * @var string serverUrl
+	 * @var string scriptSrc
 	 * @var string websiteId
 	 * @var string hostUrl
-	 * @var string autoTrack
+	 * @var string disableAutoTrack
 	 * @var string domains
 	 */
 	protected $scriptSrc;
 	protected $websiteId;
 	protected $hostUrl;
-	protected $autoTrack;
+	protected $disableAutoTrack;
 	protected $domains;
 
 	/**
@@ -65,7 +65,7 @@ class UmamiAnalyticsPlugin extends Plugin
 	    $this->scriptSrc = trim($this->config->get('plugins.umami-analytics.script_src', 'https://us.umami.is'));
 	    $this->websiteId = trim($this->config->get('plugins.umami-analytics.website_id', ''));
 	    $this->hostUrl = trim($this->config->get('plugins.umami-analytics.host_url', ''));
-	    $this->autoTrack = trim($this->config->get('plugins.umami-analytics.auto_track', ''));
+	    $this->disableAutoTrack = trim($this->config->get('plugins.umami-analytics.disable_auto_track', ''));
 	    $this->domains = trim($this->config->get('plugins.umami-analytics.domains', ''));
 
 	    // Don't proceed if there is no website ID
@@ -90,9 +90,7 @@ class UmamiAnalyticsPlugin extends Plugin
 
 		// Optional parameters
 		$hostUrlParam = $this->hostUrl ? "data-host-url=\"{$this->hostUrl}\"" : '';
-		// TODO: fix autoTrackParam:
-		// if autoTrack is empty in config file, it should not be added to the script tag, if it is true, it should be added with value true, if it is false, it should be added with value false
-		$autoTrackPram = $this->autoTrack ? "data-auto-track=\"{$this->autoTrack}\"" : '';
+		$autoTrackPram = $this->disableAutoTrack ? "data-auto-track=\"false\"":'';
 		$domaisParam = $this->domains ? "data-domains=\"{$this->domains}\"" : '';
 
 		$code = implode(PHP_EOL, [

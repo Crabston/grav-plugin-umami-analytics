@@ -9,7 +9,7 @@ en:
     HOST_URL:
       LABEL: Host URL
       HELP: By default, Umami will send data to wherever the script is located. You can override this to send data to another location.
-    AUTO_TRACK:
+    DISABLE_AUTO_TRACK:
       LABEL: Auto Track
       HELP: "By default, Umami tracks all pageviews and events for you automatically. You can disable this behavior and track events yourself using the [tracker functions](https://umami.is/docs/tracker-functions)."
     DOMAINS:
@@ -27,7 +27,7 @@ de:
     HOST_URL:
       LABEL: Host URL
       HELP: Standardmässig sendet Umami Daten dorthin, wo sich das Skript befindet. Sie können dies überschreiben, um Daten an einen anderen Ort zu senden.
-    AUTO_TRACK:
+    DISABLE_AUTO_TRACK:
       LABEL: Auto Track
       HELP: "Standardmässig verfolgt Umami automatisch alle Seitenaufrufe und Ereignisse für Sie. Sie können dieses Verhalten deaktivieren und Ereignisse mithilfe der [Tracker-Funktionen](https://umami.is/docs/tracker-functions) selbst verfolgen."
     DOMAINS:

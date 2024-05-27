@@ -61,15 +61,15 @@ form:
       placeholder: 'https://stats.mywebsite.com'
       default: ''
 
-    auto_track:
+    disable_auto_track:
       type: toggle
-      label: PLUGIN_UMAMI_ANALYTICS.AUTO_TRACK.LABEL
-      help: PLUGIN_UMAMI_ANALYTICS.AUTO_TRACK.HELP
-      highlight: "true"
-      default: "true"
+      label: PLUGIN_UMAMI_ANALYTICS.DISABLE_AUTO_TRACK.LABEL
+      help: PLUGIN_UMAMI_ANALYTICS.DISABLE_AUTO_TRACK.HELP
+      highlight: 0
+      default: 0
       options:
-        "true": PLUGIN_ADMIN.ENABLED
-        "false": PLUGIN_ADMIN.DISABLED
+        1: PLUGIN_ADMIN.DISABLED
+        0: PLUGIN_ADMIN.ENABLED
       validate:
         type: bool
 
