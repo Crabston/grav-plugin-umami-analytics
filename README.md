@@ -1,6 +1,6 @@
 # Umami Analytics Plugin
 
-The **Umami Analytics** Plugin is an extension for [Grav CMS](https://github.com/getgrav/grav) for adding Umami Analytics to your site
+The **Umami Analytics** Plugin is an extension for [Grav CMS](https://github.com/getgrav/grav) for adding [Umami Analytics](https://umami.is/) to your site
 
 ## Installation
 

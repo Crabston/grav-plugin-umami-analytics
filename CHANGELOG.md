@@ -1,5 +1,5 @@
 # v1.1.0
-##  05/28/2024
+##  2024-05-28
 
 1. [](#new)
     * Added more configuration options
@@ -10,7 +10,7 @@
     * Fixed a translation string
 
 # v1.0.0
-##  05/23/2024
+##  2024-05-23
 
 1. [](#new)
     * Initial release
