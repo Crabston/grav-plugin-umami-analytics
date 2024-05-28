@@ -51,4 +51,4 @@ After you've added your website to Umami, you have to set the `server_url` and t
 
 - [ ] add to the official plugins list
 - [ ] add option to disable tracking for logged-in users and/or in development mode
-- [ ] add more configuration options
+- [x] add more configuration options
