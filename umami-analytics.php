@@ -12,11 +12,17 @@ class UmamiAnalyticsPlugin extends Plugin
 {
 
 	/**
-	 * @var string serverUrl
+	 * @var string scriptSrc
 	 * @var string websiteId
+	 * @var string hostUrl
+	 * @var string disableAutoTrack
+	 * @var string domains
 	 */
-	protected $serverUrl;
+	protected $scriptSrc;
 	protected $websiteId;
+	protected $hostUrl;
+	protected $disableAutoTrack;
+	protected $domains;
 
 	/**
      * @return array
@@ -51,13 +57,16 @@ class UmamiAnalyticsPlugin extends Plugin
      * Initialize the plugin
      */
     public function onPluginsInitialized(): void {
-        // Don't proceed if we are in the admin plugin
-        if ($this->isAdmin()) {
-            return;
-        }
+	    // Don't proceed if we are in the admin plugin
+	    if ($this->isAdmin()) {
+		    return;
+	    }
 
-	    $this->serverUrl = trim($this->config->get('plugins.umami-analytics.server_url', ''));
+	    $this->scriptSrc = trim($this->config->get('plugins.umami-analytics.script_src', 'https://us.umami.is'));
 	    $this->websiteId = trim($this->config->get('plugins.umami-analytics.website_id', ''));
+	    $this->hostUrl = trim($this->config->get('plugins.umami-analytics.host_url', ''));
+	    $this->disableAutoTrack = trim($this->config->get('plugins.umami-analytics.disable_auto_track', ''));
+	    $this->domains = trim($this->config->get('plugins.umami-analytics.domains', ''));
 
 	    // Don't proceed if there is no website ID
 	    if (empty($this->websiteId)) {
@@ -75,9 +84,18 @@ class UmamiAnalyticsPlugin extends Plugin
 	 * The output has been processed by the Twig templating engine and is now just a string of HTML.
 	 */
 	public function onOutputGenerated(): void {
+		// Required parameters
+		$srcParam = "src=\"{$this->scriptSrc}/script.js\"";
+		$websiteIdParam = "data-website-id=\"{$this->websiteId}\"";
+
+		// Optional parameters
+		$hostUrlParam = $this->hostUrl ? "data-host-url=\"{$this->hostUrl}\"" : '';
+		$autoTrackPram = $this->disableAutoTrack ? "data-auto-track=\"false\"" : '';
+		$domaisParam = $this->domains ? "data-domains=\"{$this->domains}\"" : '';
+
 		$code = implode(PHP_EOL, [
 			'<!-- Umami Analytics Script -->',
-			"<script defer src=\"{$this->serverUrl}/script.js\" data-website-id=\"{$this->websiteId}\"></script>",
+			"<script defer ${srcParam} ${websiteIdParam} ${hostUrlParam} ${autoTrackPram} ${domaisParam}></script>",
 		]);
 
 		$content = preg_replace('/<head\s?\S*?(>)/si', "$0\n\n{$code}\n", $this->grav->output);

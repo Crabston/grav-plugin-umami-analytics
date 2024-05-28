@@ -33,21 +33,52 @@ form:
       validate:
         type: bool
 
-    server_url:
+    script_src:
       type: url
       size: medium
-      label: PLUGIN_UMAMI_ANALYTICS.SERVER_URL.LABEL
-      description: PLUGIN_UMAMI_ANALYTICS.SERVER_URL.HELP
+      label: PLUGIN_UMAMI_ANALYTICS.SCRIPT_SRC.LABEL
+      description: PLUGIN_UMAMI_ANALYTICS.SCRIPT_SRC.DESCRIPTION
       placeholder: 'https://us.umami.is'
       default: 'https://us.umami.is'
       validate:
         required: true
+        #pattern: ''
 
     website_id:
       type: text
       size: medium
       label: PLUGIN_UMAMI_ANALYTICS.WEBSITE_ID.LABEL
-      description: PLUGIN_UMAMI_ANALYTICS.WEBSITE_ID.HELP
+      description: PLUGIN_UMAMI_ANALYTICS.WEBSITE_ID.DESCRIPTION
       placeholder: '76e4f3db-8fec-47ad-82ba-f5O21cOac915'
       validate:
         required: true
+        pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+
+    host_url:
+      type: url
+      size: medium
+      label: PLUGIN_UMAMI_ANALYTICS.HOST_URL.LABEL
+      help: PLUGIN_UMAMI_ANALYTICS.HOST_URL.HELP
+      placeholder: 'https://stats.mywebsite.com'
+      default: ''
+      validate:
+        #pattern: ''
+
+    disable_auto_track:
+      type: toggle
+      label: PLUGIN_UMAMI_ANALYTICS.DISABLE_AUTO_TRACK.LABEL
+      help: PLUGIN_UMAMI_ANALYTICS.DISABLE_AUTO_TRACK.HELP
+      highlight: 0
+      default: 0
+      options:
+        1: PLUGIN_ADMIN.DISABLED
+        0: PLUGIN_ADMIN.ENABLED
+      validate:
+        type: bool
+
+    domains:
+      type: text
+      size: large
+      label: PLUGIN_UMAMI_ANALYTICS.DOMAINS.LABEL
+      help: PLUGIN_UMAMI_ANALYTICS.DOMAINS.HELP
+      placeholder: 'example.com,your-domain.tld'
