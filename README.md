@@ -33,8 +33,16 @@ Before configuring this plugin, you should copy the `user/plugins/umami-analytic
 Here is the default configuration and an explanation of available options:
 
 ```yaml
-enabled: true
+enabled: true                      # Enable or disable the plugin
+script_src: 'https://us.umami.is'  # Source URL of the Umami script
+website_id: null                   # ID of the website
+host_url: null                     # Override the host URL for data to be sent to
+disable_auto_track: false          # Disable auto tracking
+domains: null                      # Domains to track
+enable_localhost: false            # Enable tracking on localhost
 ```
+
+**The fields `script_src` and `website_id` are required.**
 
 Note that if you use the Admin Plugin, a file with your configuration named umami-analytics.yaml will be saved in the `user/config/plugins/`-folder once the configuration is saved in the Admin.
 
