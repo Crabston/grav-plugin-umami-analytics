@@ -82,3 +82,15 @@ form:
       label: PLUGIN_UMAMI_ANALYTICS.DOMAINS.LABEL
       help: PLUGIN_UMAMI_ANALYTICS.DOMAINS.HELP
       placeholder: 'example.com,your-domain.tld'
+
+    enable_localhost:
+      type: toggle
+      label: PLUGIN_UMAMI_ANALYTICS.ENABLE_LOCALHOST.LABEL
+      description: PLUGIN_UMAMI_ANALYTICS.ENABLE_LOCALHOST.DESCRIPTION
+      highlight: 0
+      default: 0
+      options:
+        1: PLUGIN_ADMIN.ENABLED
+        0: PLUGIN_ADMIN.DISABLED
+      validate:
+        type: bool

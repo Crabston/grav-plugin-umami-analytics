@@ -62,6 +62,15 @@ class UmamiAnalyticsPlugin extends Plugin
 		    return;
 	    }
 
+	    // Don't proceed if we are in the localhost
+	    $uri = $this->grav['uri']->host();
+	    $enableLocalhost = $this->config->get('plugins.umami-analytics.enable_localhost', false);
+	    if (($uri === 'localhost' || $uri === '127.0.0.1') && !$enableLocalhost) {
+		    $this->grav['debugger']->addMessage("Umami Analytics Plugin: Ignoring localhost!");
+		    return;
+	    }
+
+		// Load the plugin configuration
 	    $this->scriptSrc = trim($this->config->get('plugins.umami-analytics.script_src', 'https://us.umami.is'));
 	    $this->websiteId = trim($this->config->get('plugins.umami-analytics.website_id', ''));
 	    $this->hostUrl = trim($this->config->get('plugins.umami-analytics.host_url', ''));

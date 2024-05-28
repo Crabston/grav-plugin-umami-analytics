@@ -2,7 +2,7 @@ en:
   PLUGIN_UMAMI_ANALYTICS:
     SCRIPT_SRC:
       LABEL: Script Source
-      DESCRIPTION: The Hostname of your Umami Analytics instance
+      DESCRIPTION: Source URL of the Umami script
     WEBSITE_ID:
       LABEL: Website ID
       DESCRIPTION: The ID of your website
@@ -15,12 +15,15 @@ en:
     DOMAINS:
       LABEL: Domains
       HELP: If you want the tracker to only run on specific domains, you can add them to your tracker script. This is a comma delimited list of domain names. Helps if you are working in a staging/development environment.
+    ENABLE_LOCALHOST:
+      LABEL: Enable on localhost
+      DESCRIPTION: Enable the plugin on localhost (for development purposes)
 
 de:
   PLUGIN_UMAMI_ANALYTICS:
     SCRIPT_SRC:
       LABEL: Skriptquelle
-      DESCRIPTION: Der Hostname Ihrer Umami Analytics Instanz
+      DESCRIPTION: Quell-URL des Umami-Skripts
     WEBSITE_ID:
       LABEL: Website ID
       DESCRIPTION: Die ID Ihrer Website
@@ -33,3 +36,6 @@ de:
     DOMAINS:
       LABEL: Domains
       HELP: Wenn Sie möchten, dass der Tracker nur auf bestimmten Domänen ausgeführt wird, können Sie diese zu Ihrem Tracker-Skript hinzufügen. Dies ist eine durch Kommas getrennte Liste von Domänennamen. Hilft, wenn Sie in einer Staging-/Entwicklungsumgebung arbeiten.
+    ENABLE_LOCALHOST:
+      LABEL: Auf localhost aktivieren
+      DESCRIPTION: Das Plugin auf localhost aktivieren (für Entwicklungszwecke)
