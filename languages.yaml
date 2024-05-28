@@ -1,7 +1,7 @@
 en:
   PLUGIN_UMAMI_ANALYTICS:
     SCRIPT_SRC:
-      LABEL: Server URL
+      LABEL: Script Source
       DESCRIPTION: The Hostname of your Umami Analytics instance
     WEBSITE_ID:
       LABEL: Website ID
@@ -18,8 +18,8 @@ en:
 
 de:
   PLUGIN_UMAMI_ANALYTICS:
-    SERVER_URL:
-      LABEL: Server URL
+    SCRIPT_SRC:
+      LABEL: Skriptquelle
       DESCRIPTION: Der Hostname Ihrer Umami Analytics Instanz
     WEBSITE_ID:
       LABEL: Website ID
