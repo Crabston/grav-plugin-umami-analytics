@@ -15,6 +15,9 @@ en:
     DOMAINS:
       LABEL: Domains
       HELP: If you want the tracker to only run on specific domains, you can add them to your tracker script. This is a comma delimited list of domain names. Helps if you are working in a staging/development environment.
+    ENABLE_LOCALHOST:
+      LABEL: Enable on localhost
+      DESCRIPTION: Enable the plugin on localhost (for development purposes)
 
 de:
   PLUGIN_UMAMI_ANALYTICS:
@@ -33,3 +36,6 @@ de:
     DOMAINS:
       LABEL: Domains
       HELP: Wenn Sie möchten, dass der Tracker nur auf bestimmten Domänen ausgeführt wird, können Sie diese zu Ihrem Tracker-Skript hinzufügen. Dies ist eine durch Kommas getrennte Liste von Domänennamen. Hilft, wenn Sie in einer Staging-/Entwicklungsumgebung arbeiten.
+    ENABLE_LOCALHOST:
+      LABEL: Auf localhost aktivieren
+      DESCRIPTION: Das Plugin auf localhost aktivieren (für Entwicklungszwecke)

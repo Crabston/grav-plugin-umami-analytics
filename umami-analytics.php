@@ -64,7 +64,8 @@ class UmamiAnalyticsPlugin extends Plugin
 
 	    // Don't proceed if we are in the localhost
 	    $uri = $this->grav['uri']->host();
-	    if ($uri === 'localhost' || $uri === '127.0.0.1') {
+	    $enableLocalhost = $this->config->get('plugins.umami-analytics.enable_localhost', false);
+	    if (($uri === 'localhost' || $uri === '127.0.0.1') && !$enableLocalhost) {
 		    $this->grav['debugger']->addMessage("Umami Analytics Plugin: Ignoring localhost!");
 		    return;
 	    }
