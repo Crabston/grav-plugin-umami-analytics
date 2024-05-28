@@ -57,10 +57,10 @@ class UmamiAnalyticsPlugin extends Plugin
      * Initialize the plugin
      */
     public function onPluginsInitialized(): void {
-        // Don't proceed if we are in the admin plugin
-        if ($this->isAdmin()) {
-            return;
-        }
+	    // Don't proceed if we are in the admin plugin
+	    if ($this->isAdmin()) {
+		    return;
+	    }
 
 	    $this->scriptSrc = trim($this->config->get('plugins.umami-analytics.script_src', 'https://us.umami.is'));
 	    $this->websiteId = trim($this->config->get('plugins.umami-analytics.website_id', ''));
@@ -90,7 +90,7 @@ class UmamiAnalyticsPlugin extends Plugin
 
 		// Optional parameters
 		$hostUrlParam = $this->hostUrl ? "data-host-url=\"{$this->hostUrl}\"" : '';
-		$autoTrackPram = $this->disableAutoTrack ? "data-auto-track=\"false\"":'';
+		$autoTrackPram = $this->disableAutoTrack ? "data-auto-track=\"false\"" : '';
 		$domaisParam = $this->domains ? "data-domains=\"{$this->domains}\"" : '';
 
 		$code = implode(PHP_EOL, [
