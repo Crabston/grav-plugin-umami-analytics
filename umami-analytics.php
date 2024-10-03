@@ -36,11 +36,7 @@ class UmamiAnalyticsPlugin extends Plugin
      */
     public static function getSubscribedEvents(): array {
         return [
-            'onPluginsInitialized' => [
-                // Uncomment following line when plugin requires Grav < 1.7
-                // ['autoload', 100000],
-                ['onPluginsInitialized', 0]
-            ]
+            'onPluginsInitialized' => ['onPluginsInitialized', 0]
         ];
     }
 
@@ -85,29 +81,20 @@ class UmamiAnalyticsPlugin extends Plugin
 
 	    // Enable the main event we are interested in
 	    $this->enable([
-		    'onOutputGenerated' => ['onOutputGenerated', 0],
+		    'onAssetsInitialized' => ['onAssetsInitialized', 0],
 	    ]);
     }
 
 	/**
-	 * The output has been processed by the Twig templating engine and is now just a string of HTML.
+	 * Add the plugin assets
 	 */
-	public function onOutputGenerated(): void {
-		// Required parameters
-		$srcParam = "src=\"{$this->scriptSrc}/script.js\"";
-		$websiteIdParam = "data-website-id=\"{$this->websiteId}\"";
-
-		// Optional parameters
-		$hostUrlParam = $this->hostUrl ? "data-host-url=\"{$this->hostUrl}\"" : '';
-		$autoTrackPram = $this->disableAutoTrack ? "data-auto-track=\"false\"" : '';
-		$domaisParam = $this->domains ? "data-domains=\"{$this->domains}\"" : '';
-
-		$code = implode(PHP_EOL, [
-			'<!-- Umami Analytics Script -->',
-			"<script defer ${srcParam} ${websiteIdParam} ${hostUrlParam} ${autoTrackPram} ${domaisParam}></script>",
+	public function onAssetsInitialized(): void {
+		$this->grav['assets']->addJs("$this->scriptSrc/script.js", [
+			'loading' => 'defer',
+			'data-website-id' => $this->websiteId,
+			'data-host-url' => $this->hostUrl,
+			'data-auto-track' => $this->disableAutoTrack,
+			'data-domains' => $this->domains,
 		]);
-
-		$content = preg_replace('/<head\s?\S*?(>)/si', "$0\n\n{$code}\n", $this->grav->output);
-		$this->grav->output = $content;
 	}
 }
