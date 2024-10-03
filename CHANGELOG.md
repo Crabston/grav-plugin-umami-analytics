@@ -1,3 +1,8 @@
+# v1.1.1
+##  _unreleased_
+1. [](#improved)
+   - add JS through asset manager
+
 # v1.1.0
 ##  28-05-2024
 1. [](#bugfix)
