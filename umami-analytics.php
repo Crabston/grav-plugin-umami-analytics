@@ -67,7 +67,7 @@ class UmamiAnalyticsPlugin extends Plugin
 	    }
 
 		// Load the plugin configuration
-	    $this->scriptSrc = trim($this->config->get('plugins.umami-analytics.script_src', 'https://us.umami.is'));
+	    $this->scriptSrc = trim($this->config->get('plugins.umami-analytics.script_src', 'https://us.umami.is/script.js'));
 	    $this->websiteId = trim($this->config->get('plugins.umami-analytics.website_id', ''));
 	    $this->hostUrl = trim($this->config->get('plugins.umami-analytics.host_url', ''));
 	    $this->disableAutoTrack = trim($this->config->get('plugins.umami-analytics.disable_auto_track', ''));
@@ -89,7 +89,7 @@ class UmamiAnalyticsPlugin extends Plugin
 	 * Add the plugin assets
 	 */
 	public function onAssetsInitialized(): void {
-		$this->grav['assets']->addJs("$this->scriptSrc/script.js", [
+		$this->grav['assets']->addJs("$this->scriptSrc", [
 			'loading' => 'defer',
 			'data-website-id' => $this->websiteId,
 			'data-host-url' => $this->hostUrl,
