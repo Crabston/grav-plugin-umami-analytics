@@ -6,9 +6,6 @@ en:
     WEBSITE_ID:
       LABEL: Website ID
       DESCRIPTION: The ID of your website
-    HOST_URL:
-      LABEL: Host URL
-      HELP: By default, Umami will send data to wherever the script is located. You can override this to send data to another location.
     DISABLE_AUTO_TRACK:
       LABEL: Auto Track
       HELP: "By default, Umami tracks all pageviews and events for you automatically. You can disable this behavior and track events yourself using the [tracker functions](https://umami.is/docs/tracker-functions)."
@@ -18,6 +15,27 @@ en:
     ENABLE_LOCALHOST:
       LABEL: Enable on localhost
       DESCRIPTION: Enable the plugin on localhost (for development purposes)
+    DONOTTRACK:
+      LABEL: Do not track
+      HELP: Honor the browsers "Do Not Track" signal and disable Umami tracking when enabled.
+    PERFORMANCE:
+      LABEL: Performance tracking
+      HELP: Collect and send page performance metrics to Umami when enabled.
+    RECORDER:
+      LABEL: Session recording
+      HELP: Load Umami's separate recorder.js script. Session recording must also be enabled for the website in Umami.
+    PROXY:
+      TITLE: Umami proxy
+      TEXT: Serve the tracker and forward supported Umami API requests through this Grav site.
+      ENABLE:
+        LABEL: Enable proxy
+      SCRIPT_PATH:
+        LABEL: Script path
+      API_ENDPOINT:
+        LABEL: API endpoint
+      CACHE_TTL:
+        LABEL: Script cache TTL
+        HELP: Cache the upstream tracker scripts for this many seconds. Set to 0 to disable server-side caching.
 
 de:
   PLUGIN_UMAMI_ANALYTICS:
@@ -27,9 +45,6 @@ de:
     WEBSITE_ID:
       LABEL: Website ID
       DESCRIPTION: Die ID Ihrer Website
-    HOST_URL:
-      LABEL: Host URL
-      HELP: Standardmässig sendet Umami Daten dorthin, wo sich das Skript befindet. Sie können dies überschreiben, um Daten an einen anderen Ort zu senden.
     DISABLE_AUTO_TRACK:
       LABEL: Auto Track
       HELP: "Standardmässig verfolgt Umami automatisch alle Seitenaufrufe und Ereignisse für Sie. Sie können dieses Verhalten deaktivieren und Ereignisse mithilfe der [Tracker-Funktionen](https://umami.is/docs/tracker-functions) selbst verfolgen."
@@ -39,3 +54,24 @@ de:
     ENABLE_LOCALHOST:
       LABEL: Auf localhost aktivieren
       DESCRIPTION: Das Plugin auf localhost aktivieren (für Entwicklungszwecke)
+    DONOTTRACK:
+      LABEL: Nicht verfolgen
+      HELP: Das Browser Signal „Do Not Track“ berücksichtigen und Umami Tracking bei Aktivierung deaktivieren.
+    PERFORMANCE:
+      LABEL: Leistungsmessung
+      HELP: Bei Aktivierung Seitenleistungsdaten erfassen und an Umami senden.
+    RECORDER:
+      LABEL: Sitzungsaufzeichnung
+      HELP: Umamis separates recorder.js Skript laden. Die Sitzungsaufzeichnung muss auch für die Website in Umami aktiviert sein.
+    PROXY:
+      TITLE: Umami Proxy
+      TEXT: Den Tracker über die Grav Website bereitstellen und unterstützte Umami API Anfragen weiterleiten.
+      ENABLE:
+        LABEL: Proxy aktivieren
+      SCRIPT_PATH:
+        LABEL: Skriptpfad
+      API_ENDPOINT:
+        LABEL: API Endpunkt
+      CACHE_TTL:
+        LABEL: Skript Cache TTL
+        HELP: Die Umami Tracker Skripte für diese Anzahl Sekunden zwischenspeichern. Bei 0 wird der Server Cache deaktiviert.

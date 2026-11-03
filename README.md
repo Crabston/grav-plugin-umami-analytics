@@ -36,10 +36,17 @@ Here is the default configuration and an explanation of available options:
 enabled: true                      # Enable or disable the plugin
 script_src: 'https://us.umami.is'  # Source URL of the Umami script
 website_id: null                   # ID of the website
-host_url: null                     # Override the host URL for data to be sent to
 disable_auto_track: false          # Disable auto tracking
 domains: null                      # Domains to track
 enable_localhost: false            # Enable tracking on localhost
+doNotTrack: true                   # Honor the browser Do Not Track signal
+performance: false                 # Collect page performance metrics
+recorder: false                    # Proxy recorder.js for session recording
+proxy:
+  enable: true
+  script_path: stats.js
+  api_endpoint: /stats-api/
+  cache_ttl: 3600
 ```
 
 **The fields `script_src` and `website_id` are required.**
@@ -50,13 +57,11 @@ Note that if you use the Admin Plugin, a file with your configuration named umam
 
 The plugin will inject the Umami Analytics script into your site's `<head>` tag. You can verify this by inspecting the source code of your site.
 
-After you've added your website to Umami, you have to set the `server_url` and the `website_id` fields in the plugin configuration. You can find these values in the Umami dashboard.
+After you've added your website to Umami, set `script_src` and `website_id` in the plugin configuration. You can find these values in the Umami dashboard.
 
-- `server_url` is the URL of your Umami server, e.g. `https://us.umami.is`.
+- `script_src` is the URL of your Umami server, e.g. `https://us.umami.is`.
 - `website_id` is the ID of your website, e.g. `76e4f3db-8fec-47ad-82ba-f5O21cOac915`.
 
-## To Do
+The proxy serves the tracker at `<site>/<proxy.script_path>` and, when `recorder` is enabled, serves `recorder.js` separately at `<site>/<proxy.script_path with "-recorder.js">`. Tracker and recorder requests are forwarded below `proxy.api_endpoint`; `/stats-api/send` is forwarded to Umami's `/api/send`. The defaults use `/stats.js` and `/stats-api/`; change them if either path conflicts with a route on your site. `proxy.cache_ttl` sets the server-side script cache lifetime in seconds (0 disables it).
 
-- [x] add to the official plugins list
-- [x] disable tracking in development mode (overrideable)
-- [x] add more configuration options
+`doNotTrack` maps to Umami's `data-do-not-track` setting; when enabled, Umami suppresses tracking for visitors whose browser signals Do Not Track. `performance` enables Umami performance metrics, and `recorder` loads the separate recording script. Session recording must also be enabled for the website in the Umami dashboard.

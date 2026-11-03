@@ -5,3 +5,11 @@ host_url: null
 disable_auto_track: false
 domains: null
 enable_localhost: false
+doNotTrack: true
+performance: false
+recorder: false
+proxy:
+  enable: true
+  script_path: stats.js
+  api_endpoint: /stats-api/
+  cache_ttl: 3600
