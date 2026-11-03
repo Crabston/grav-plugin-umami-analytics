@@ -1,7 +1,7 @@
-# v1.1.1
+# v2.0.0
 ##  _unreleased_
-1. [](#improved)
-   - add JS through asset manager
+1. [](#new)
+   - add Umami Proxy to bypass ad & tracking blockers
 
 # v1.1.0
 ##  28-05-2024

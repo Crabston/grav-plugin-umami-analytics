@@ -43,10 +43,10 @@ doNotTrack: true                   # Honor the browser Do Not Track signal
 performance: false                 # Collect page performance metrics
 recorder: false                    # Proxy recorder.js for session recording
 proxy:
-  enable: true
-  script_path: stats.js
-  api_endpoint: /stats-api/
-  cache_ttl: 3600
+  enable: true                     # Enable the proxy
+  script_path: stats.js            # Path to the tracker script 
+  api_endpoint: /stats-api/        # API endpoint for proxy requests 
+  cache_ttl: 3600                  # Cache lifetime for proxied scripts in seconds 
 ```
 
 **The fields `script_src` and `website_id` are required.**
