@@ -54,16 +54,6 @@ form:
         required: true
         pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
 
-    host_url:
-      type: url
-      size: medium
-      label: PLUGIN_UMAMI_ANALYTICS.HOST_URL.LABEL
-      help: PLUGIN_UMAMI_ANALYTICS.HOST_URL.HELP
-      placeholder: 'https://stats.mywebsite.com'
-      default: ''
-      validate:
-        #pattern: ''
-
     disable_auto_track:
       type: toggle
       label: PLUGIN_UMAMI_ANALYTICS.DISABLE_AUTO_TRACK.LABEL
@@ -94,3 +84,82 @@ form:
         0: PLUGIN_ADMIN.DISABLED
       validate:
         type: bool
+
+    doNotTrack:
+      type: toggle
+      label: PLUGIN_UMAMI_ANALYTICS.DONOTTRACK.LABEL
+      help: PLUGIN_UMAMI_ANALYTICS.DONOTTRACK.HELP
+      highlight: 1
+      default: 1
+      options:
+        1: PLUGIN_ADMIN.ENABLED
+        0: PLUGIN_ADMIN.DISABLED
+      validate:
+        type: bool
+
+    performance:
+      type: toggle
+      label: PLUGIN_UMAMI_ANALYTICS.PERFORMANCE.LABEL
+      help: PLUGIN_UMAMI_ANALYTICS.PERFORMANCE.HELP
+      highlight: 0
+      default: 0
+      options:
+        1: PLUGIN_ADMIN.ENABLED
+        0: PLUGIN_ADMIN.DISABLED
+      validate:
+        type: bool
+
+    recorder:
+      type: toggle
+      label: PLUGIN_UMAMI_ANALYTICS.RECORDER.LABEL
+      help: PLUGIN_UMAMI_ANALYTICS.RECORDER.HELP
+      highlight: 0
+      default: 0
+      options:
+        1: PLUGIN_ADMIN.ENABLED
+        0: PLUGIN_ADMIN.DISABLED
+      validate:
+        type: bool
+
+    proxy:
+      type: section
+      style: vertical
+      title: PLUGIN_UMAMI_ANALYTICS.PROXY.TITLE
+      text: PLUGIN_UMAMI_ANALYTICS.PROXY.TEXT
+      fields:
+        enable:
+          type: toggle
+          label: PLUGIN_UMAMI_ANALYTICS.PROXY.ENABLE.LABEL
+          highlight: 1
+          default: 1
+          options:
+            1: PLUGIN_ADMIN.ENABLED
+            0: PLUGIN_ADMIN.DISABLED
+          validate:
+            type: bool
+
+        script_path:
+          type: text
+          size: medium
+          label: PLUGIN_UMAMI_ANALYTICS.PROXY.SCRIPT_PATH.LABEL
+          default: stats.js
+          validate:
+            pattern: '^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*\.js$'
+
+        api_endpoint:
+          type: text
+          size: medium
+          label: PLUGIN_UMAMI_ANALYTICS.PROXY.API_ENDPOINT.LABEL
+          default: /stats-api/
+          validate:
+            pattern: '^/[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*/?$'
+
+        cache_ttl:
+          type: number
+          size: small
+          label: PLUGIN_UMAMI_ANALYTICS.PROXY.CACHE_TTL.LABEL
+          help: PLUGIN_UMAMI_ANALYTICS.PROXY.CACHE_TTL.HELP
+          default: 3600
+          validate:
+            type: int
+            min: 0
