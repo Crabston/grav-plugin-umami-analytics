@@ -7,7 +7,9 @@ use Grav\Common\HTTP\Response as HttpResponse;
 use Grav\Common\Plugin;
 use Grav\Common\Processors\Events\RequestHandlerEvent;
 use Grav\Framework\Psr7\Response;
+use Grav\Plugin\UmamiAnalytics\Api\EmbedController;
 use Psr\Http\Message\ServerRequestInterface;
+use RocketTheme\Toolbox\Event\Event;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 /**
@@ -53,8 +55,34 @@ class UmamiAnalyticsPlugin extends Plugin {
 	 */
 	public static function getSubscribedEvents(): array {
 		return [
-			'onPluginsInitialized' => ['onPluginsInitialized', 0]
+			'onPluginsInitialized' => ['onPluginsInitialized', 0],
+			'onApiSidebarItems' => ['onApiSidebarItems', 0],
+			'onApiRegisterRoutes' => ['onApiRegisterRoutes', 0],
 		];
+	}
+
+	/**
+	 * Add an Umami analytics page to the Admin2 sidebar.
+	 */
+	public function onApiSidebarItems(Event $event): void {
+		$items = $event['items'];
+		$items[] = [
+			'id' => 'umami-analytics',
+			'plugin' => 'umami-analytics',
+			'label' => 'Umami Analytics',
+			'icon' => 'fa-chart-line',
+			'route' => '/plugin/umami-analytics',
+			'priority' => 40,
+			'authorize' => 'api.access',
+		];
+		$event['items'] = $items;
+	}
+
+	/**
+	 * Register the authenticated endpoint used by the Admin2 page.
+	 */
+	public function onApiRegisterRoutes(Event $event): void {
+		$event['routes']->get('/umami-analytics/embed', [EmbedController::class, 'embed']);
 	}
 
 	/**

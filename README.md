@@ -36,6 +36,7 @@ Here is the default configuration and an explanation of available options:
 enabled: true                      # Enable or disable the plugin
 script_src: 'https://us.umami.is'  # Source URL of the Umami script
 website_id: null                   # ID of the website
+share_id: null                     # Optional public Umami share ID for the Admin2 dashboard
 disable_auto_track: false          # Disable auto tracking
 domains: null                      # Domains to track
 enable_localhost: false            # Enable tracking on localhost
@@ -51,6 +52,10 @@ proxy:
 
 **The fields `script_src` and `website_id` are required.**
 
+To display analytics inside **Grav Admin2**, create a share link for your website in Umami and copy the ID from its `/share/<id>` URL into `share_id`. The plugin adds an **Umami Analytics** page to the Admin2 sidebar and embeds that shared dashboard. Since Umami share links are public, anyone who has the link can view the shared statistics. This page requires the Grav API and Admin2 plugins to be installed and enabled.
+
+Umami may block embedding by default. Allow your Grav admin's origin in Umami's `ALLOWED_FRAME_URLS` environment variable (for example, `https://grav.example.com`), then rebuild/redeploy Umami; this is a build-time setting. Until then, open the public share URL in a new tab.
+
 Note that if you use the Admin Plugin, a file with your configuration named umami-analytics.yaml will be saved in the `user/config/plugins/`-folder once the configuration is saved in the Admin.
 
 ## Usage
@@ -61,6 +66,7 @@ After you've added your website to Umami, set `script_src` and `website_id` in t
 
 - `script_src` is the URL of your Umami server, e.g. `https://us.umami.is`.
 - `website_id` is the ID of your website, e.g. `76e4f3db-8fec-47ad-82ba-f5O21cOac915`.
+- `share_id` is the identifier in the Umami dashboard's public share URL. See [Embed analytics in your app](https://docs.umami.is/docs/guides/embed-analytics-in-your-app) for details.
 
 The proxy serves the tracker at `<site>/<proxy.script_path>` and, when `recorder` is enabled, serves `recorder.js` separately at `<site>/<proxy.script_path with "-recorder.js">`. Tracker and recorder requests are forwarded below `proxy.api_endpoint`; `/stats-api/send` is forwarded to Umami's `/api/send`. The defaults use `/stats.js` and `/stats-api/`; change them if either path conflicts with a route on your site. `proxy.cache_ttl` sets the server-side script cache lifetime in seconds (0 disables it).
 

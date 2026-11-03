@@ -54,6 +54,15 @@ form:
         required: true
         pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
 
+    share_id:
+      type: text
+      size: medium
+      label: PLUGIN_UMAMI_ANALYTICS.SHARE_ID.LABEL
+      description: PLUGIN_UMAMI_ANALYTICS.SHARE_ID.DESCRIPTION
+      placeholder: PLUGIN_UMAMI_ANALYTICS.SHARE_ID.PLACEHOLDER
+      validate:
+        pattern: '^[A-Za-z0-9_-]+$'
+
     disable_auto_track:
       type: toggle
       label: PLUGIN_UMAMI_ANALYTICS.DISABLE_AUTO_TRACK.LABEL
