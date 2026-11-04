@@ -1,0 +1,14 @@
+{
+	"name": "grav-umami-analytics-api-client",
+	"private": true,
+	"type": "module",
+	"engines": {
+		"node": ">=20"
+	},
+	"scripts": {
+		"fetch-dashboard": "node fetch-dashboard.mjs"
+	},
+	"dependencies": {
+		"@umami/api-client": "0.81.0"
+	}
+}
