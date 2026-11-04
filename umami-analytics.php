@@ -6,8 +6,11 @@ use Composer\Autoload\ClassLoader;
 use Grav\Common\HTTP\Response as HttpResponse;
 use Grav\Common\Plugin;
 use Grav\Common\Processors\Events\RequestHandlerEvent;
+use Grav\Common\Uri;
 use Grav\Framework\Psr7\Response;
+use Grav\Plugin\UmamiAnalytics\Api\DashboardController;
 use Psr\Http\Message\ServerRequestInterface;
+use RocketTheme\Toolbox\Event\Event;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 /**
@@ -53,7 +56,51 @@ class UmamiAnalyticsPlugin extends Plugin {
 	 */
 	public static function getSubscribedEvents(): array {
 		return [
-			'onPluginsInitialized' => ['onPluginsInitialized', 0]
+			'onPluginsInitialized' => ['onPluginsInitialized', 0],
+			'onApiSidebarItems' => ['onApiSidebarItems', 0],
+			'onApiRegisterRoutes' => ['onApiRegisterRoutes', 0],
+			'onApiPluginPageInfo' => ['onApiPluginPageInfo', 0],
+		];
+	}
+
+	/**
+	 * Add an Umami analytics page to the Admin2 sidebar.
+	 */
+	public function onApiSidebarItems(Event $event): void {
+		$items = $event['items'];
+		$items[] = [
+			'id' => 'umami-analytics',
+			'plugin' => 'umami-analytics',
+			'label' => $this->grav['language']->translate('PLUGIN_UMAMI_ANALYTICS.ADMIN_TITLE'),
+			'icon' => 'fa-chart-line',
+			'route' => '/plugin/umami-analytics',
+			'priority' => 40,
+			'authorize' => 'api.access',
+		];
+		$event['items'] = $items;
+	}
+
+	/**
+	 * Register the authenticated endpoint used by the Admin2 page.
+	 */
+	public function onApiRegisterRoutes(Event $event): void {
+		$event['routes']->get('/umami-analytics/dashboard', [DashboardController::class, 'dashboard']);
+	}
+
+	/**
+	 * Provide the plugin page definition so admin2 renders the custom component.
+	 */
+	public function onApiPluginPageInfo(Event $event): void {
+		if (($event['plugin'] ?? '') !== 'umami-analytics') {
+			return;
+		}
+
+		$event['definition'] = [
+			'id' => 'umami-analytics',
+			'plugin' => 'umami-analytics',
+			'title' => $this->grav['language']->translate('PLUGIN_UMAMI_ANALYTICS.ADMIN_TITLE'),
+			'icon' => 'fa-chart-line',
+			'page_type' => 'component',
 		];
 	}
 
@@ -79,7 +126,7 @@ class UmamiAnalyticsPlugin extends Plugin {
 		$uri = $this->grav['uri']->host();
 		$enableLocalhost = $this->config->get('plugins.umami-analytics.enable_localhost', false);
 		if (($uri === 'localhost' || $uri === '127.0.0.1') && !$enableLocalhost) {
-			$this->grav['debugger']->addMessage("Umami Analytics Plugin: Ignoring localhost!");
+			$this->grav['debugger']->addMessage($this->grav['language']->translate('PLUGIN_UMAMI_ANALYTICS.MESSAGES.IGNORE_LOCALHOST'));
 			return;
 		}
 
@@ -98,23 +145,23 @@ class UmamiAnalyticsPlugin extends Plugin {
 
 		$source = parse_url($this->scriptSrc);
 		if (!$source || !in_array($source['scheme'] ?? '', ['http', 'https'], true) || empty($source['host'])) {
-			$this->grav['debugger']->addMessage('Umami Analytics Plugin: The script source must be an HTTP(S) URL.', 'error');
+			$this->grav['debugger']->addMessage($this->grav['language']->translate('PLUGIN_UMAMI_ANALYTICS.MESSAGES.INVALID_SCRIPT_SOURCE'), 'error');
 			return;
 		}
 
 		if (!preg_match('~^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*\.js$~', $this->scriptPath)) {
-			$this->grav['debugger']->addMessage('Umami Analytics Plugin: The proxy script path must be a relative .js path using letters, numbers, underscores, and hyphens.', 'error');
+			$this->grav['debugger']->addMessage($this->grav['language']->translate('PLUGIN_UMAMI_ANALYTICS.MESSAGES.INVALID_SCRIPT_PATH'), 'error');
 			return;
 		}
 
 		if (!preg_match('~^/[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*/?$~', $this->apiEndpoint)) {
-			$this->grav['debugger']->addMessage('Umami Analytics Plugin: The API endpoint must be a root-relative path using letters, numbers, underscores, and hyphens.', 'error');
+			$this->grav['debugger']->addMessage($this->grav['language']->translate('PLUGIN_UMAMI_ANALYTICS.MESSAGES.INVALID_API_ENDPOINT'), 'error');
 			return;
 		}
 
 		// Don't proceed if there is no website ID
 		if (empty($this->websiteId)) {
-			$this->grav['debugger']->addMessage('Umami Analytics Plugin: No website ID configured!', 'error');
+			$this->grav['debugger']->addMessage($this->grav['language']->translate('PLUGIN_UMAMI_ANALYTICS.MESSAGES.MISSING_WEBSITE_ID'), 'error');
 			return;
 		}
 
@@ -142,6 +189,7 @@ class UmamiAnalyticsPlugin extends Plugin {
 
 		$options = [
 			'loading' => 'defer',
+			'pipeline' => false,
 			'data-website-id' => $this->websiteId,
 			'data-auto-track' => $this->disableAutoTrack,
 			'data-domains' => $this->domains,
@@ -161,6 +209,7 @@ class UmamiAnalyticsPlugin extends Plugin {
 				: $this->scriptSrc . '/recorder.js';
 			$recorderOptions = [
 				'loading' => 'defer',
+				'pipeline' => false,
 				'data-website-id' => $this->websiteId,
 			];
 			if ($this->proxyEnabled) {
@@ -228,8 +277,8 @@ class UmamiAnalyticsPlugin extends Plugin {
 				return $this->createProxyResponse($upstream, $request->getMethod() === 'HEAD');
 			}
 		} catch (TransportExceptionInterface $exception) {
-			$this->grav['debugger']->addMessage('Umami Analytics proxy request failed: ' . $exception->getMessage(), 'error');
-			return new Response(502, ['Content-Type' => 'text/plain'], 'Unable to reach the Umami server.');
+			$this->grav['debugger']->addMessage($this->grav['language']->translate('PLUGIN_UMAMI_ANALYTICS.MESSAGES.PROXY_FAILED') . $exception->getMessage(), 'error');
+			return new Response(502, ['Content-Type' => 'text/plain'], $this->grav['language']->translate('PLUGIN_UMAMI_ANALYTICS.MESSAGES.SERVER_UNREACHABLE'));
 		}
 
 		$upstreamBody = $upstream->getContent(false);
@@ -279,8 +328,8 @@ class UmamiAnalyticsPlugin extends Plugin {
 			}
 		}
 
-		$clientIp = $request->getServerParams()['REMOTE_ADDR'] ?? '';
-		if ($clientIp !== '') {
+		$clientIp = Uri::ip();
+		if ($clientIp !== 'UNKNOWN') {
 			$headers['X-Forwarded-For'] = $clientIp;
 		}
 
@@ -298,8 +347,8 @@ class UmamiAnalyticsPlugin extends Plugin {
 		try {
 			$upstream = HttpResponse::request($request->getMethod(), $upstreamUrl, $options);
 		} catch (TransportExceptionInterface $exception) {
-			$this->grav['debugger']->addMessage('Umami Analytics proxy request failed: ' . $exception->getMessage(), 'error');
-			return new Response(502, ['Content-Type' => 'text/plain'], 'Unable to reach the Umami server.');
+			$this->grav['debugger']->addMessage($this->grav['language']->translate('PLUGIN_UMAMI_ANALYTICS.MESSAGES.PROXY_FAILED') . $exception->getMessage(), 'error');
+			return new Response(502, ['Content-Type' => 'text/plain'], $this->grav['language']->translate('PLUGIN_UMAMI_ANALYTICS.MESSAGES.SERVER_UNREACHABLE'));
 		}
 
 		return $this->createProxyResponse($upstream, $request->getMethod() === 'HEAD');

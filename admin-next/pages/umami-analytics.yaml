@@ -1,0 +1,5 @@
+id: umami-analytics
+plugin: umami-analytics
+title: Umami Analytics
+icon: fa-chart-line
+page_type: component

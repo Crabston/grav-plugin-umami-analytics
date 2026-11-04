@@ -5,7 +5,13 @@ en:
       DESCRIPTION: Source URL of the Umami script
     WEBSITE_ID:
       LABEL: Website ID
-      DESCRIPTION: The ID of your website
+      DESCRIPTION: The ID of your website. A Grav environment config override takes precedence when set.
+    API_BASE_URL:
+      LABEL: Umami API URL
+      HELP: Optional API root. Leave blank for a self-hosted server using script_src plus /api, or enter https://api.umami.is/v1 for Umami Cloud.
+    API_TOKEN:
+      LABEL: Umami API token
+      HELP: Create a read-only Umami API key for this website. The token stays on the server and is not sent to Admin2. A Grav environment config override takes precedence when set.
     DISABLE_AUTO_TRACK:
       LABEL: Auto Track
       HELP: "By default, Umami tracks all pageviews and events for you automatically. You can disable this behavior and track events yourself using the [tracker functions](https://umami.is/docs/tracker-functions)."
@@ -36,6 +42,47 @@ en:
       CACHE_TTL:
         LABEL: Script cache TTL
         HELP: Cache the upstream tracker scripts for this many seconds. Set to 0 to disable server-side caching.
+    ADMIN_TITLE: Umami Analytics
+    DASHBOARD:
+      LOADING: Loading Umami analytics…
+      LOAD_ERROR: Unable to load Umami analytics.
+      CONFIGURE_TOKEN: Configure the Umami API token in Plugins → Umami Analytics to display statistics.
+      DATE_RANGE: Statistics date range
+      LAST_DAYS: Last %days% days
+      PAGEVIEWS: Pageviews
+      VISITORS: Visitors
+      VISITS: Visits
+      BOUNCE_RATE: Bounce rate
+      AVG_VISIT_DURATION: Avg. visit duration
+      PAGEVIEWS_OVER_TIME: Pageviews over time
+      NO_PAGEVIEW_DATA: No pageview data for this period.
+      PAGEVIEWS_TOOLTIP: "%date%: %count% pageviews"
+      TOP_PAGES: Top pages
+      TOP_REFERRERS: Top referrers
+      TOP_COUNTRIES: Top countries
+      BROWSERS: Browsers
+      OPERATING_SYSTEMS: Operating systems
+      DEVICES: Devices
+      NO_DATA: No data
+      UNKNOWN: Unknown
+      MINUTES: m
+      SECONDS: s
+    MESSAGES:
+      IGNORE_LOCALHOST: "Umami Analytics Plugin: Ignoring localhost!"
+      INVALID_SCRIPT_SOURCE: "Umami Analytics Plugin: The script source must be an HTTP(S) URL."
+      INVALID_SCRIPT_PATH: "Umami Analytics Plugin: The proxy script path must be a relative .js path using letters, numbers, underscores, and hyphens."
+      INVALID_API_ENDPOINT: "Umami Analytics Plugin: The API endpoint must be a root-relative path using letters, numbers, underscores, and hyphens."
+      MISSING_WEBSITE_ID: "Umami Analytics Plugin: No website ID configured!"
+      PROXY_FAILED: "Umami Analytics proxy request failed: "
+      SERVER_UNREACHABLE: Unable to reach the Umami server.
+    API:
+      INVALID_WEBSITE_ID: The Umami website ID is invalid.
+      INVALID_RANGE: The analytics range must be 7, 30, or 90 days.
+      INVALID_URL: The Umami API URL must be a valid HTTP(S) URL without credentials or query parameters.
+      REQUEST_FAILED: Umami API request failed
+      UPSTREAM_ERROR: The Umami API returned an error (status %status%). Check the API URL, token, website ID, and server logs.
+      INVALID_RESPONSE: The Umami API returned an invalid response.
+      CLIENT_ERROR: The Umami API client could not load analytics. Check the API URL, token, website ID, and server logs.
 
 de:
   PLUGIN_UMAMI_ANALYTICS:
@@ -44,7 +91,13 @@ de:
       DESCRIPTION: Quell-URL des Umami-Skripts
     WEBSITE_ID:
       LABEL: Website ID
-      DESCRIPTION: Die ID Ihrer Website
+      DESCRIPTION: Die ID Ihrer Website. Eine Grav Konfigurationsüberschreibung aus der Umgebung hat Vorrang, wenn gesetzt.
+    API_BASE_URL:
+      LABEL: Umami API URL
+      HELP: Optionale API-Basis-URL. Leer lassen für einen selbst gehosteten Server (script_src plus /api) oder https://api.umami.is/v1 für Umami Cloud eintragen.
+    API_TOKEN:
+      LABEL: Umami API-Token
+      HELP: Einen schreibgeschützten Umami-API-Schlüssel für diese Website erstellen. Das Token bleibt auf dem Server und wird nicht an Admin2 gesendet. Eine Grav Konfigurationsüberschreibung aus der Umgebung hat Vorrang, wenn gesetzt.
     DISABLE_AUTO_TRACK:
       LABEL: Auto Track
       HELP: "Standardmässig verfolgt Umami automatisch alle Seitenaufrufe und Ereignisse für Sie. Sie können dieses Verhalten deaktivieren und Ereignisse mithilfe der [Tracker-Funktionen](https://umami.is/docs/tracker-functions) selbst verfolgen."
@@ -75,3 +128,44 @@ de:
       CACHE_TTL:
         LABEL: Skript Cache TTL
         HELP: Die Umami Tracker Skripte für diese Anzahl Sekunden zwischenspeichern. Bei 0 wird der Server Cache deaktiviert.
+    ADMIN_TITLE: Umami Analytics
+    DASHBOARD:
+      LOADING: Umami-Analysedaten werden geladen…
+      LOAD_ERROR: Umami-Analysedaten konnten nicht geladen werden.
+      CONFIGURE_TOKEN: Konfigurieren Sie das Umami-API-Token unter Plugins → Umami Analytics, um Statistiken anzuzeigen.
+      DATE_RANGE: Zeitraum der Statistik
+      LAST_DAYS: Letzte %days% Tage
+      PAGEVIEWS: Seitenaufrufe
+      VISITORS: Besucher
+      VISITS: Besuche
+      BOUNCE_RATE: Absprungrate
+      AVG_VISIT_DURATION: Durchschnittliche Besuchsdauer
+      PAGEVIEWS_OVER_TIME: Seitenaufrufe im Zeitverlauf
+      NO_PAGEVIEW_DATA: Für diesen Zeitraum liegen keine Daten zu Seitenaufrufen vor.
+      PAGEVIEWS_TOOLTIP: "%date%: %count% Seitenaufrufe"
+      TOP_PAGES: Top-Seiten
+      TOP_REFERRERS: Top-Verweisquellen
+      TOP_COUNTRIES: Top-Länder
+      BROWSERS: Browser
+      OPERATING_SYSTEMS: Betriebssysteme
+      DEVICES: Geräte
+      NO_DATA: Keine Daten
+      UNKNOWN: Unbekannt
+      MINUTES: Min.
+      SECONDS: Sek.
+    MESSAGES:
+      IGNORE_LOCALHOST: "Umami-Analytics-Plugin: Localhost wird ignoriert!"
+      INVALID_SCRIPT_SOURCE: "Umami-Analytics-Plugin: Die Skriptquelle muss eine HTTP(S)-URL sein."
+      INVALID_SCRIPT_PATH: "Umami-Analytics-Plugin: Der Proxy-Skriptpfad muss ein relativer .js-Pfad sein und darf nur Buchstaben, Zahlen, Unterstriche und Bindestriche enthalten."
+      INVALID_API_ENDPOINT: "Umami-Analytics-Plugin: Der API-Endpunkt muss ein absoluter Pfad ab der Website-Wurzel sein und darf nur Buchstaben, Zahlen, Unterstriche und Bindestriche enthalten."
+      MISSING_WEBSITE_ID: "Umami-Analytics-Plugin: Es ist keine Website-ID konfiguriert!"
+      PROXY_FAILED: "Umami-Analytics-Proxy-Anfrage fehlgeschlagen: "
+      SERVER_UNREACHABLE: Der Umami-Server ist nicht erreichbar.
+    API:
+      INVALID_WEBSITE_ID: Die Umami-Website-ID ist ungültig.
+      INVALID_RANGE: Der Statistikzeitraum muss 7, 30 oder 90 Tage betragen.
+      INVALID_URL: Die Umami-API-URL muss eine gültige HTTP(S)-URL ohne Zugangsdaten oder Abfrageparameter sein.
+      REQUEST_FAILED: Umami-API-Anfrage fehlgeschlagen
+      UPSTREAM_ERROR: Die Umami-API hat einen Fehler zurückgegeben (Status %status%). Prüfen Sie die API-URL, das Token, die Website-ID und die Serverprotokolle.
+      INVALID_RESPONSE: Die Umami-API hat eine ungültige Antwort zurückgegeben.
+      CLIENT_ERROR: Der Umami-API-Client konnte keine Analysedaten laden. Prüfen Sie die API-URL, das Token, die Website-ID und die Serverprotokolle.

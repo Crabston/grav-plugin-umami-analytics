@@ -1,7 +1,8 @@
 enabled: true
 script_src: 'https://us.umami.is'
 website_id: null
-host_url: null
+api_base_url: null
+api_token: null
 disable_auto_track: false
 domains: null
 enable_localhost: false
