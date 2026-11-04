@@ -55,7 +55,6 @@ if (!customElements.get(tag)) {
 					this.renderMessage("Configure the Umami API token in Plugins → Umami Analytics to display statistics.");
 					return;
 				}
-
 				this.renderDashboard(result.data);
 			} catch (error) {
 				this.renderMessage(error instanceof Error ? error.message : "Unable to load Umami analytics.", true);

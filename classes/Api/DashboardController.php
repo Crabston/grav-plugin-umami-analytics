@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Grav\Plugin\UmamiAnalytics\Api;
 
-use Grav\Common\HTTP\Response as HttpResponse;
 use Grav\Plugin\Api\Controllers\AbstractApiController;
 use Grav\Plugin\Api\Exceptions\ApiException;
 use Grav\Plugin\Api\Exceptions\ValidationException;
 use Grav\Plugin\Api\Response\ApiResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class DashboardController extends AbstractApiController {
@@ -30,6 +30,17 @@ class DashboardController extends AbstractApiController {
 		$days = filter_var($query['days'] ?? 7, FILTER_VALIDATE_INT);
 		if ($days === false || !in_array($days, [7, 30, 90], true)) {
 			throw new ValidationException('The analytics range must be 7, 30, or 90 days.');
+		}
+
+		// Check cache first (60-second TTL to avoid hammering the Umami API on every request)
+		$cacheTtl = (int)$this->config->get('plugins.umami-analytics.dashboard_cache_ttl', 60);
+		$cacheHeaders = $cacheTtl > 0 ? ['Cache-Control' => "public, max-age={$cacheTtl}"] : [];
+		if ($cacheTtl > 0) {
+			$cacheKey = 'umami-analytics-dashboard-' . md5($websiteId . '|' . $days);
+			$cached = $this->grav['cache']->fetch($cacheKey);
+			if (is_array($cached) && isset($cached['data']) && is_array($cached['data'])) {
+				return ApiResponse::create($cached['data'], 200, $cacheHeaders);
+			}
 		}
 
 		$baseUrl = trim((string)$this->config->get('plugins.umami-analytics.api_base_url', ''));
@@ -58,21 +69,76 @@ class DashboardController extends AbstractApiController {
 		];
 		$options = ['headers' => $headers, 'timeout' => 20];
 
+		// Build all request URLs with their query parameters
+		$endpoint = '/websites/' . $websiteId;
+		$urls = [
+			'stats' => $baseUrl . $endpoint . '/stats',
+			'pageviews' => $baseUrl . $endpoint . '/pageviews',
+			'paths' => $baseUrl . $endpoint . '/metrics',
+			'referrers' => $baseUrl . $endpoint . '/metrics',
+			'countries' => $baseUrl . $endpoint . '/metrics',
+			'browsers' => $baseUrl . $endpoint . '/metrics',
+			'operatingSystems' => $baseUrl . $endpoint . '/metrics',
+			'devices' => $baseUrl . $endpoint . '/metrics',
+		];
+		$queries = [
+			'stats' => $range,
+			'pageviews' => array_merge($range, ['unit' => 'day']),
+			'paths' => array_merge($range, ['type' => 'path', 'limit' => 10]),
+			'referrers' => array_merge($range, ['type' => 'referrer', 'limit' => 10]),
+			'countries' => array_merge($range, ['type' => 'country', 'limit' => 10]),
+			'browsers' => array_merge($range, ['type' => 'browser', 'limit' => 10]),
+			'operatingSystems' => array_merge($range, ['type' => 'os', 'limit' => 10]),
+			'devices' => array_merge($range, ['type' => 'device', 'limit' => 10]),
+		];
+
+		// Fire all requests concurrently using Symfony HttpClient
+		$client = HttpClient::create($options);
+		$responses = [];
+		foreach ($urls as $key => $url) {
+			$qs = http_build_query($queries[$key], '', '&', PHP_QUERY_RFC3986);
+			$fullUrl = $qs !== '' ? $url . '?' . $qs : $url;
+			$responses[$key] = $client->request('GET', $fullUrl);
+		}
+
+		// Collect all responses as they complete
+		$results = [];
 		try {
-			$rawStats = $this->apiGet($baseUrl . '/websites/' . $websiteId . '/stats', $range, $options);
-			$pageviews = $this->apiGet($baseUrl . '/websites/' . $websiteId . '/pageviews', array_merge($range, ['unit' => 'day']), $options);
-			$paths = $this->apiGet($baseUrl . '/websites/' . $websiteId . '/metrics', array_merge($range, ['type' => 'path', 'limit' => 10]), $options);
-			$referrers = $this->apiGet($baseUrl . '/websites/' . $websiteId . '/metrics', array_merge($range, ['type' => 'referrer', 'limit' => 10]), $options);
-			$countries = $this->apiGet($baseUrl . '/websites/' . $websiteId . '/metrics', array_merge($range, ['type' => 'country', 'limit' => 10]), $options);
-			$browsers = $this->apiGet($baseUrl . '/websites/' . $websiteId . '/metrics', array_merge($range, ['type' => 'browser', 'limit' => 10]), $options);
-			$operatingSystems = $this->apiGet($baseUrl . '/websites/' . $websiteId . '/metrics', array_merge($range, ['type' => 'os', 'limit' => 10]), $options);
-			$devices = $this->apiGet($baseUrl . '/websites/' . $websiteId . '/metrics', array_merge($range, ['type' => 'device', 'limit' => 10]), $options);
+			foreach ($client->stream($responses) as $response => $chunk) {
+				$key = array_search($response, $responses, true);
+				if ($chunk->isLast()) {
+					$status = $response->getStatusCode();
+					$body = $response->getContent(false);
+					if ($status < 200 || $status >= 300) {
+						$this->grav['log']->error('Umami API returned status ' . $status . ' for ' . $key . ': ' . trim((string)$body));
+						throw new ApiException(502, 'Umami API request failed', 'The Umami API returned an error (status ' . $status . '). Check the API URL, token, website ID, and server logs.');
+					}
+					$data = json_decode($body, true);
+					if (!is_array($data)) {
+						$this->grav['log']->error('Umami API returned invalid JSON for ' . $key . ': ' . trim((string)$body));
+						throw new ApiException(502, 'Umami API request failed', 'The Umami API returned an invalid response.');
+					}
+					$results[$key] = $data;
+				}
+			}
 		} catch (ApiException $e) {
 			throw $e;
+		} catch (TransportExceptionInterface $e) {
+			$this->grav['log']->error('Umami API request failed: ' . $e->getMessage());
+			throw new ApiException(502, 'Umami API request failed', 'The Umami API client could not load analytics. Check the API URL, token, website ID, and server logs.');
 		} catch (\Exception $e) {
 			$this->grav['log']->error('Umami API request failed: ' . $e->getMessage());
 			throw new ApiException(502, 'Umami API request failed', 'The Umami API client could not load analytics. Check the API URL, token, website ID, and server logs.');
 		}
+
+		$rawStats = $results['stats'] ?? [];
+		$pageviews = $results['pageviews'] ?? [];
+		$paths = $results['paths'] ?? [];
+		$referrers = $results['referrers'] ?? [];
+		$countries = $results['countries'] ?? [];
+		$browsers = $results['browsers'] ?? [];
+		$operatingSystems = $results['operatingSystems'] ?? [];
+		$devices = $results['devices'] ?? [];
 
 		$row = $this->firstStatsRow($rawStats);
 		$visits = (int)($row['visits'] ?? 0);
@@ -86,7 +152,7 @@ class DashboardController extends AbstractApiController {
 			'averageVisitDurationSeconds' => $visits ? round((int)($row['totaltime'] ?? 0) / $visits) : 0,
 		];
 
-		return ApiResponse::create([
+		$resultData = [
 			'stats' => $stats,
 			'pageviews' => is_array($pageviews['pageviews'] ?? null) ? $pageviews['pageviews'] : [],
 			'sessions' => is_array($pageviews['sessions'] ?? null) ? $pageviews['sessions'] : [],
@@ -98,32 +164,15 @@ class DashboardController extends AbstractApiController {
 				'operatingSystems' => $operatingSystems ?? [],
 				'devices' => $devices ?? [],
 			],
-		]);
-	}
+		];
 
-	/**
-	 * Make a GET request to the Umami API and return the decoded JSON response.
-	 */
-	private function apiGet(string $url, array $query, array $options): array {
-		$qs = http_build_query($query, '', '&', PHP_QUERY_RFC3986);
-		$fullUrl = $qs !== '' ? $url . '?' . $qs : $url;
-		try {
-			$response = HttpResponse::request('GET', $fullUrl, $options);
-		} catch (TransportExceptionInterface $e) {
-			throw new ApiException(502, 'Umami API request failed', 'The Umami API client could not load analytics. Check the API URL, token, website ID, and server logs.');
+		// Cache the result for subsequent requests
+		if ($cacheTtl > 0) {
+			$cacheKey = 'umami-analytics-dashboard-' . md5($websiteId . '|' . $days);
+			$this->grav['cache']->save($cacheKey, ['data' => $resultData], $cacheTtl);
 		}
-		$status = $response->getStatusCode();
-		$body = $response->getContent(false);
-		if ($status < 200 || $status >= 300) {
-			$this->grav['log']->error('Umami API returned status ' . $status . ': ' . trim((string)$body));
-			throw new ApiException(502, 'Umami API request failed', 'The Umami API returned an error (status ' . $status . '). Check the API URL, token, website ID, and server logs.');
-		}
-		$data = json_decode($body, true);
-		if (!is_array($data)) {
-			$this->grav['log']->error('Umami API returned invalid JSON: ' . trim((string)$body));
-			throw new ApiException(502, 'Umami API request failed', 'The Umami API returned an invalid response.');
-		}
-		return $data;
+
+		return ApiResponse::create($resultData, 200, $cacheHeaders);
 	}
 
 	/**

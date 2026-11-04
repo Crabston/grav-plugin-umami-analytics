@@ -59,6 +59,7 @@ class UmamiAnalyticsPlugin extends Plugin {
 			'onPluginsInitialized' => ['onPluginsInitialized', 0],
 			'onApiSidebarItems' => ['onApiSidebarItems', 0],
 			'onApiRegisterRoutes' => ['onApiRegisterRoutes', 0],
+			'onApiPluginPageInfo' => ['onApiPluginPageInfo', 0],
 		];
 	}
 
@@ -84,6 +85,23 @@ class UmamiAnalyticsPlugin extends Plugin {
 	 */
 	public function onApiRegisterRoutes(Event $event): void {
 		$event['routes']->get('/umami-analytics/dashboard', [DashboardController::class, 'dashboard']);
+	}
+
+	/**
+	 * Provide the plugin page definition so admin2 renders the custom component.
+	 */
+	public function onApiPluginPageInfo(Event $event): void {
+		if (($event['plugin'] ?? '') !== 'umami-analytics') {
+			return;
+		}
+
+		$event['definition'] = [
+			'id' => 'umami-analytics',
+			'plugin' => 'umami-analytics',
+			'title' => 'Umami Analytics',
+			'icon' => 'fa-chart-line',
+			'page_type' => 'component',
+		];
 	}
 
 	/**
