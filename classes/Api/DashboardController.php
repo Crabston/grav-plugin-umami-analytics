@@ -16,6 +16,7 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 class DashboardController extends AbstractApiController {
 	public function dashboard(ServerRequestInterface $request): ResponseInterface {
 		$this->requirePermission($request, 'api.access');
+		$translate = fn(string $key): string => $this->grav['language']->translate('PLUGIN_UMAMI_ANALYTICS.API.' . $key);
 
 		$websiteId = trim((string)$this->config->get('plugins.umami-analytics.website_id', ''));
 		$token = trim((string)$this->config->get('plugins.umami-analytics.api_token', ''));
@@ -23,13 +24,13 @@ class DashboardController extends AbstractApiController {
 			return ApiResponse::create(['configured' => false]);
 		}
 		if (!preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $websiteId)) {
-			throw new ValidationException('The Umami website ID is invalid.');
+			throw new ValidationException($translate('INVALID_WEBSITE_ID'));
 		}
 
 		$query = $request->getQueryParams();
 		$days = filter_var($query['days'] ?? 7, FILTER_VALIDATE_INT);
 		if ($days === false || !in_array($days, [7, 30, 90], true)) {
-			throw new ValidationException('The analytics range must be 7, 30, or 90 days.');
+			throw new ValidationException($translate('INVALID_RANGE'));
 		}
 
 		// Check cache first (60-second TTL to avoid hammering the Umami API on every request)
@@ -57,7 +58,7 @@ class DashboardController extends AbstractApiController {
 			|| isset($server['user'])
 			|| isset($server['pass'])
 		) {
-			throw new ValidationException('The Umami API URL must be a valid HTTP(S) URL without credentials or query parameters.');
+			throw new ValidationException($translate('INVALID_URL'));
 		}
 
 		$endAt = (int)(microtime(true) * 1000);
@@ -111,12 +112,12 @@ class DashboardController extends AbstractApiController {
 					$body = $response->getContent(false);
 					if ($status < 200 || $status >= 300) {
 						$this->grav['log']->error('Umami API returned status ' . $status . ' for ' . $key . ': ' . trim((string)$body));
-						throw new ApiException(502, 'Umami API request failed', 'The Umami API returned an error (status ' . $status . '). Check the API URL, token, website ID, and server logs.');
+						throw new ApiException(502, $translate('REQUEST_FAILED'), str_replace('%status%', (string)$status, $translate('UPSTREAM_ERROR')));
 					}
 					$data = json_decode($body, true);
 					if (!is_array($data)) {
 						$this->grav['log']->error('Umami API returned invalid JSON for ' . $key . ': ' . trim((string)$body));
-						throw new ApiException(502, 'Umami API request failed', 'The Umami API returned an invalid response.');
+						throw new ApiException(502, $translate('REQUEST_FAILED'), $translate('INVALID_RESPONSE'));
 					}
 					$results[$key] = $data;
 				}
@@ -125,10 +126,10 @@ class DashboardController extends AbstractApiController {
 			throw $e;
 		} catch (TransportExceptionInterface $e) {
 			$this->grav['log']->error('Umami API request failed: ' . $e->getMessage());
-			throw new ApiException(502, 'Umami API request failed', 'The Umami API client could not load analytics. Check the API URL, token, website ID, and server logs.');
+			throw new ApiException(502, $translate('REQUEST_FAILED'), $translate('CLIENT_ERROR'));
 		} catch (\Exception $e) {
 			$this->grav['log']->error('Umami API request failed: ' . $e->getMessage());
-			throw new ApiException(502, 'Umami API request failed', 'The Umami API client could not load analytics. Check the API URL, token, website ID, and server logs.');
+			throw new ApiException(502, $translate('REQUEST_FAILED'), $translate('CLIENT_ERROR'));
 		}
 
 		$rawStats = $results['stats'] ?? [];

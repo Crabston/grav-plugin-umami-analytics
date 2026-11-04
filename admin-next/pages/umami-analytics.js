@@ -1,4 +1,57 @@
 const tag = window.__GRAV_PAGE_TAG || "grav-umami-analytics--page";
+const locale = (document.documentElement.lang || navigator.language || "en").toLowerCase().startsWith("de") ? "de" : "en";
+const strings = {
+	en: {
+		loading: "Loading Umami analytics…",
+		loadError: "Unable to load Umami analytics.",
+		configureToken: "Configure the Umami API token in Plugins → Umami Analytics to display statistics.",
+		dateRange: "Statistics date range",
+		lastDays: days => `Last ${days} days`,
+		pageviews: "Pageviews",
+		visitors: "Visitors",
+		visits: "Visits",
+		bounceRate: "Bounce rate",
+		avgVisitDuration: "Avg. visit duration",
+		pageviewsOverTime: "Pageviews over time",
+		noPageviewData: "No pageview data for this period.",
+		pageviewsTooltip: (date, count) => `${date}: ${count} pageviews`,
+		topPages: "Top pages",
+		topReferrers: "Top referrers",
+		topCountries: "Top countries",
+		browsers: "Browsers",
+		operatingSystems: "Operating systems",
+		devices: "Devices",
+		noData: "No data",
+		unknown: "Unknown",
+		minutes: "m",
+		seconds: "s",
+	},
+	de: {
+		loading: "Umami-Analysedaten werden geladen…",
+		loadError: "Umami-Analysedaten konnten nicht geladen werden.",
+		configureToken: "Konfigurieren Sie das Umami-API-Token unter Plugins → Umami Analytics, um Statistiken anzuzeigen.",
+		dateRange: "Zeitraum der Statistik",
+		lastDays: days => `Letzte ${days} Tage`,
+		pageviews: "Seitenaufrufe",
+		visitors: "Besucher",
+		visits: "Besuche",
+		bounceRate: "Absprungrate",
+		avgVisitDuration: "Durchschnittliche Besuchsdauer",
+		pageviewsOverTime: "Seitenaufrufe im Zeitverlauf",
+		noPageviewData: "Für diesen Zeitraum liegen keine Daten zu Seitenaufrufen vor.",
+		pageviewsTooltip: (date, count) => `${date}: ${count} Seitenaufrufe`,
+		topPages: "Top-Seiten",
+		topReferrers: "Top-Verweisquellen",
+		topCountries: "Top-Länder",
+		browsers: "Browser",
+		operatingSystems: "Betriebssysteme",
+		devices: "Geräte",
+		noData: "Keine Daten",
+		unknown: "Unbekannt",
+		minutes: "Min.",
+		seconds: "Sek.",
+	},
+}[locale];
 
 if (!customElements.get(tag)) {
 	customElements.define(tag, class extends HTMLElement {
@@ -50,7 +103,7 @@ if (!customElements.get(tag)) {
 		}
 
 		async loadDashboard() {
-			this.renderMessage("Loading Umami analytics…");
+			this.renderMessage(strings.loading);
 			try {
 				const adminConfig = window.__GRAV_CONFIG__ || {};
 				const serverUrl = window.__GRAV_API_SERVER_URL ?? adminConfig.serverUrl ?? "";
@@ -63,15 +116,15 @@ if (!customElements.get(tag)) {
 				const response = await fetch(endpoint, { headers, credentials: "same-origin" });
 				const result = await response.json();
 				if (!response.ok) {
-					throw new Error(result.detail || result.message || result.error?.detail || result.error?.message || "Unable to load Umami analytics.");
+					throw new Error(result.detail || result.message || result.error?.detail || result.error?.message || strings.loadError);
 				}
 				if (result.data?.configured === false) {
-					this.renderMessage("Configure the Umami API token in Plugins → Umami Analytics to display statistics.");
+					this.renderMessage(strings.configureToken);
 					return;
 				}
 				this.renderDashboard(result.data);
 			} catch (error) {
-				this.renderMessage(error instanceof Error ? error.message : "Unable to load Umami analytics.", true);
+				this.renderMessage(error instanceof Error ? error.message : strings.loadError, true);
 			}
 		}
 
@@ -107,21 +160,21 @@ if (!customElements.get(tag)) {
 					@media (max-width: 600px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 				</style>
 				<div class="toolbar">
-					<select aria-label="Statistics date range">
-						<option value="7">Last 7 days</option>
-						<option value="30">Last 30 days</option>
-						<option value="90">Last 90 days</option>
+					<select aria-label="${strings.dateRange}">
+						<option value="7">${strings.lastDays(7)}</option>
+						<option value="30">${strings.lastDays(30)}</option>
+						<option value="90">${strings.lastDays(90)}</option>
 					</select>
 				</div>
 				<section class="cards">
-					<div class="card"><div class="label">Pageviews</div><div class="value" data-stat="pageviews"></div></div>
-					<div class="card"><div class="label">Visitors</div><div class="value" data-stat="visitors"></div></div>
-					<div class="card"><div class="label">Visits</div><div class="value" data-stat="visits"></div></div>
-					<div class="card"><div class="label">Bounce rate</div><div class="value" data-stat="bounces"></div></div>
-					<div class="card"><div class="label">Avg. visit duration</div><div class="value" data-stat="totaltime"></div></div>
+					<div class="card"><div class="label">${strings.pageviews}</div><div class="value" data-stat="pageviews"></div></div>
+					<div class="card"><div class="label">${strings.visitors}</div><div class="value" data-stat="visitors"></div></div>
+					<div class="card"><div class="label">${strings.visits}</div><div class="value" data-stat="visits"></div></div>
+					<div class="card"><div class="label">${strings.bounceRate}</div><div class="value" data-stat="bounces"></div></div>
+					<div class="card"><div class="label">${strings.avgVisitDuration}</div><div class="value" data-stat="totaltime"></div></div>
 				</section>
 				<section class="panel">
-					<h2>Pageviews over time</h2>
+					<h2>${strings.pageviewsOverTime}</h2>
 					<div class="chart"></div>
 				</section>
 				<section class="metrics"></section>
@@ -134,7 +187,7 @@ if (!customElements.get(tag)) {
 				visitors: formatNumber(stats.visitors),
 				visits: formatNumber(stats.visits),
 				bounces: `${Number(stats.bounceRate) || 0}%`,
-				totaltime: `${Math.floor(duration / 60)}m ${duration % 60}s`,
+				totaltime: `${Math.floor(duration / 60)}${strings.minutes} ${duration % 60}${strings.seconds}`,
 			};
 			for (const [key, value] of Object.entries(statValues)) {
 				this.shadowRoot.querySelector(`[data-stat="${key}"]`).textContent = value;
@@ -152,7 +205,7 @@ if (!customElements.get(tag)) {
 			const max = Math.max(1, ...points.map(point => Number(point.y) || 0));
 			if (points.length === 0) {
 				chart.classList.add("chart-empty");
-				chart.textContent = "No pageview data for this period.";
+				chart.textContent = strings.noPageviewData;
 			} else {
 				for (const point of points) {
 					const wrap = document.createElement("div");
@@ -160,19 +213,19 @@ if (!customElements.get(tag)) {
 					const bar = document.createElement("div");
 					bar.className = "bar";
 					bar.style.height = `${Math.max(1, (Number(point.y) / max) * 100)}%`;
-					bar.title = `${new Date(point.x).toLocaleDateString()}: ${formatNumber(point.y)} pageviews`;
+					bar.title = strings.pageviewsTooltip(new Date(point.x).toLocaleDateString(locale), formatNumber(point.y));
 					wrap.appendChild(bar);
 					chart.appendChild(wrap);
 				}
 			}
 
 			const labels = [
-				["paths", "Top pages"],
-				["referrers", "Top referrers"],
-				["countries", "Top countries"],
-				["browsers", "Browsers"],
-				["operatingSystems", "Operating systems"],
-				["devices", "Devices"],
+				["paths", strings.topPages],
+				["referrers", strings.topReferrers],
+				["countries", strings.topCountries],
+				["browsers", strings.browsers],
+				["operatingSystems", strings.operatingSystems],
+				["devices", strings.devices],
 			];
 			const metricContainer = this.shadowRoot.querySelector(".metrics");
 			for (const [key, title] of labels) {
@@ -187,14 +240,14 @@ if (!customElements.get(tag)) {
 				if (rows.length === 0) {
 					const empty = document.createElement("li");
 					empty.className = "empty";
-					empty.textContent = "No data";
+					empty.textContent = strings.noData;
 					list.appendChild(empty);
 				}
 				for (const row of rows) {
 					const item = document.createElement("li");
 					const name = document.createElement("span");
 					name.className = "metric-name";
-					name.textContent = String(row.x ?? "Unknown");
+					name.textContent = String(row.x ?? strings.unknown);
 					const value = document.createElement("span");
 					value.className = "metric-value";
 					value.textContent = formatNumber(row.y);

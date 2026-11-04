@@ -71,7 +71,7 @@ class UmamiAnalyticsPlugin extends Plugin {
 		$items[] = [
 			'id' => 'umami-analytics',
 			'plugin' => 'umami-analytics',
-			'label' => 'Umami Analytics',
+			'label' => $this->grav['language']->translate('PLUGIN_UMAMI_ANALYTICS.ADMIN_TITLE'),
 			'icon' => 'fa-chart-line',
 			'route' => '/plugin/umami-analytics',
 			'priority' => 40,
@@ -98,7 +98,7 @@ class UmamiAnalyticsPlugin extends Plugin {
 		$event['definition'] = [
 			'id' => 'umami-analytics',
 			'plugin' => 'umami-analytics',
-			'title' => 'Umami Analytics',
+			'title' => $this->grav['language']->translate('PLUGIN_UMAMI_ANALYTICS.ADMIN_TITLE'),
 			'icon' => 'fa-chart-line',
 			'page_type' => 'component',
 		];
@@ -126,7 +126,7 @@ class UmamiAnalyticsPlugin extends Plugin {
 		$uri = $this->grav['uri']->host();
 		$enableLocalhost = $this->config->get('plugins.umami-analytics.enable_localhost', false);
 		if (($uri === 'localhost' || $uri === '127.0.0.1') && !$enableLocalhost) {
-			$this->grav['debugger']->addMessage("Umami Analytics Plugin: Ignoring localhost!");
+			$this->grav['debugger']->addMessage($this->grav['language']->translate('PLUGIN_UMAMI_ANALYTICS.MESSAGES.IGNORE_LOCALHOST'));
 			return;
 		}
 
@@ -145,23 +145,23 @@ class UmamiAnalyticsPlugin extends Plugin {
 
 		$source = parse_url($this->scriptSrc);
 		if (!$source || !in_array($source['scheme'] ?? '', ['http', 'https'], true) || empty($source['host'])) {
-			$this->grav['debugger']->addMessage('Umami Analytics Plugin: The script source must be an HTTP(S) URL.', 'error');
+			$this->grav['debugger']->addMessage($this->grav['language']->translate('PLUGIN_UMAMI_ANALYTICS.MESSAGES.INVALID_SCRIPT_SOURCE'), 'error');
 			return;
 		}
 
 		if (!preg_match('~^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*\.js$~', $this->scriptPath)) {
-			$this->grav['debugger']->addMessage('Umami Analytics Plugin: The proxy script path must be a relative .js path using letters, numbers, underscores, and hyphens.', 'error');
+			$this->grav['debugger']->addMessage($this->grav['language']->translate('PLUGIN_UMAMI_ANALYTICS.MESSAGES.INVALID_SCRIPT_PATH'), 'error');
 			return;
 		}
 
 		if (!preg_match('~^/[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*/?$~', $this->apiEndpoint)) {
-			$this->grav['debugger']->addMessage('Umami Analytics Plugin: The API endpoint must be a root-relative path using letters, numbers, underscores, and hyphens.', 'error');
+			$this->grav['debugger']->addMessage($this->grav['language']->translate('PLUGIN_UMAMI_ANALYTICS.MESSAGES.INVALID_API_ENDPOINT'), 'error');
 			return;
 		}
 
 		// Don't proceed if there is no website ID
 		if (empty($this->websiteId)) {
-			$this->grav['debugger']->addMessage('Umami Analytics Plugin: No website ID configured!', 'error');
+			$this->grav['debugger']->addMessage($this->grav['language']->translate('PLUGIN_UMAMI_ANALYTICS.MESSAGES.MISSING_WEBSITE_ID'), 'error');
 			return;
 		}
 
@@ -277,8 +277,8 @@ class UmamiAnalyticsPlugin extends Plugin {
 				return $this->createProxyResponse($upstream, $request->getMethod() === 'HEAD');
 			}
 		} catch (TransportExceptionInterface $exception) {
-			$this->grav['debugger']->addMessage('Umami Analytics proxy request failed: ' . $exception->getMessage(), 'error');
-			return new Response(502, ['Content-Type' => 'text/plain'], 'Unable to reach the Umami server.');
+			$this->grav['debugger']->addMessage($this->grav['language']->translate('PLUGIN_UMAMI_ANALYTICS.MESSAGES.PROXY_FAILED') . $exception->getMessage(), 'error');
+			return new Response(502, ['Content-Type' => 'text/plain'], $this->grav['language']->translate('PLUGIN_UMAMI_ANALYTICS.MESSAGES.SERVER_UNREACHABLE'));
 		}
 
 		$upstreamBody = $upstream->getContent(false);
@@ -347,8 +347,8 @@ class UmamiAnalyticsPlugin extends Plugin {
 		try {
 			$upstream = HttpResponse::request($request->getMethod(), $upstreamUrl, $options);
 		} catch (TransportExceptionInterface $exception) {
-			$this->grav['debugger']->addMessage('Umami Analytics proxy request failed: ' . $exception->getMessage(), 'error');
-			return new Response(502, ['Content-Type' => 'text/plain'], 'Unable to reach the Umami server.');
+			$this->grav['debugger']->addMessage($this->grav['language']->translate('PLUGIN_UMAMI_ANALYTICS.MESSAGES.PROXY_FAILED') . $exception->getMessage(), 'error');
+			return new Response(502, ['Content-Type' => 'text/plain'], $this->grav['language']->translate('PLUGIN_UMAMI_ANALYTICS.MESSAGES.SERVER_UNREACHABLE'));
 		}
 
 		return $this->createProxyResponse($upstream, $request->getMethod() === 'HEAD');
