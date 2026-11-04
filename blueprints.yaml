@@ -54,14 +54,18 @@ form:
         required: true
         pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
 
-    share_id:
-      type: text
+    api_base_url:
+      type: url
       size: medium
-      label: PLUGIN_UMAMI_ANALYTICS.SHARE_ID.LABEL
-      description: PLUGIN_UMAMI_ANALYTICS.SHARE_ID.DESCRIPTION
-      placeholder: PLUGIN_UMAMI_ANALYTICS.SHARE_ID.PLACEHOLDER
-      validate:
-        pattern: '^[A-Za-z0-9_-]+$'
+      label: PLUGIN_UMAMI_ANALYTICS.API_BASE_URL.LABEL
+      help: PLUGIN_UMAMI_ANALYTICS.API_BASE_URL.HELP
+      placeholder: 'https://umami.example.com/api'
+
+    api_token:
+      type: password
+      size: medium
+      label: PLUGIN_UMAMI_ANALYTICS.API_TOKEN.LABEL
+      help: PLUGIN_UMAMI_ANALYTICS.API_TOKEN.HELP
 
     disable_auto_track:
       type: toggle

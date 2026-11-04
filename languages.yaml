@@ -6,10 +6,12 @@ en:
     WEBSITE_ID:
       LABEL: Website ID
       DESCRIPTION: The ID of your website
-    SHARE_ID:
-      LABEL: Umami share ID
-      DESCRIPTION: The ID from the public share URL used to display the website dashboard in Admin2
-      PLACEHOLDER: Paste the share ID, not the full URL
+    API_BASE_URL:
+      LABEL: Umami API URL
+      HELP: Optional API root. Leave blank for a self-hosted server using script_src plus /api, or enter https://api.umami.is/v1 for Umami Cloud.
+    API_TOKEN:
+      LABEL: Umami API token
+      HELP: Create a read-only Umami API key for this website. The token stays on the server and is not sent to Admin2.
     DISABLE_AUTO_TRACK:
       LABEL: Auto Track
       HELP: "By default, Umami tracks all pageviews and events for you automatically. You can disable this behavior and track events yourself using the [tracker functions](https://umami.is/docs/tracker-functions)."
@@ -49,10 +51,12 @@ de:
     WEBSITE_ID:
       LABEL: Website ID
       DESCRIPTION: Die ID Ihrer Website
-    SHARE_ID:
-      LABEL: Umami Share-ID
-      DESCRIPTION: Die ID aus der öffentlichen Umami Share URL für das Dashboard in Admin2
-      PLACEHOLDER: Share-ID einfügen, nicht die vollständige URL
+    API_BASE_URL:
+      LABEL: Umami API URL
+      HELP: Optionale API-Basis-URL. Leer lassen für einen selbst gehosteten Server (script_src plus /api) oder https://api.umami.is/v1 für Umami Cloud eintragen.
+    API_TOKEN:
+      LABEL: Umami API-Token
+      HELP: Einen schreibgeschützten Umami-API-Schlüssel für diese Website erstellen. Das Token bleibt auf dem Server und wird nicht an Admin2 gesendet.
     DISABLE_AUTO_TRACK:
       LABEL: Auto Track
       HELP: "Standardmässig verfolgt Umami automatisch alle Seitenaufrufe und Ereignisse für Sie. Sie können dieses Verhalten deaktivieren und Ereignisse mithilfe der [Tracker-Funktionen](https://umami.is/docs/tracker-functions) selbst verfolgen."

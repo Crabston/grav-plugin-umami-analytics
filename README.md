@@ -36,7 +36,8 @@ Here is the default configuration and an explanation of available options:
 enabled: true                      # Enable or disable the plugin
 script_src: 'https://us.umami.is'  # Source URL of the Umami script
 website_id: null                   # ID of the website
-share_id: null                     # Optional public Umami share ID for the Admin2 dashboard
+api_base_url: null                 # Umami API root (self-hosted defaults to script_src/api)
+api_token: null                    # Read-only Umami API key/token (keep private)
 disable_auto_track: false          # Disable auto tracking
 domains: null                      # Domains to track
 enable_localhost: false            # Enable tracking on localhost
@@ -52,9 +53,16 @@ proxy:
 
 **The fields `script_src` and `website_id` are required.**
 
-To display analytics inside **Grav Admin2**, create a share link for your website in Umami and copy the ID from its `/share/<id>` URL into `share_id`. The plugin adds an **Umami Analytics** page to the Admin2 sidebar and embeds that shared dashboard. Since Umami share links are public, anyone who has the link can view the shared statistics. This page requires the Grav API and Admin2 plugins to be installed and enabled.
+To display analytics inside **Grav Admin2**, set `api_token` to a read-only Umami API key/token. The plugin adds an **Umami Analytics** page with statistics, pageviews over time, and top pages, referrers, countries, browsers, operating systems, and devices. The API token stays on the server and is not sent to Admin2. The page requires the Grav API and Admin2 plugins to be installed and enabled, plus Node.js 20+ available to PHP and PHP's `proc_open` enabled.
 
-Umami may block embedding by default. Allow your Grav admin's origin in Umami's `ALLOWED_FRAME_URLS` environment variable (for example, `https://grav.example.com`), then rebuild/redeploy Umami; this is a build-time setting. Until then, open the public share URL in a new tab.
+Install the included Node dependency in the plugin's `node/` directory:
+
+```sh
+cd user/plugins/umami-analytics/node
+npm ci
+```
+
+For self-hosted Umami, leave `api_base_url` blank to use `<script_src>/api`. For Umami Cloud, set it to `https://api.umami.is/v1`. Create an Umami API key with read-only access to the configured website.
 
 Note that if you use the Admin Plugin, a file with your configuration named umami-analytics.yaml will be saved in the `user/config/plugins/`-folder once the configuration is saved in the Admin.
 
@@ -66,7 +74,8 @@ After you've added your website to Umami, set `script_src` and `website_id` in t
 
 - `script_src` is the URL of your Umami server, e.g. `https://us.umami.is`.
 - `website_id` is the ID of your website, e.g. `76e4f3db-8fec-47ad-82ba-f5O21cOac915`.
-- `share_id` is the identifier in the Umami dashboard's public share URL. See [Embed analytics in your app](https://docs.umami.is/docs/guides/embed-analytics-in-your-app) for details.
+- `api_base_url` optionally overrides the API root URL. The [Umami API client](https://docs.umami.is/docs/api/api-client) defaults to `https://api.umami.is/v1` for Umami Cloud and uses `https://your-umami.example.com/api` for self-hosted servers.
+- `api_token` is an Umami API key or login token. Store it in Grav's private plugin configuration; never put it in the browser or a public source repository.
 
 The proxy serves the tracker at `<site>/<proxy.script_path>` and, when `recorder` is enabled, serves `recorder.js` separately at `<site>/<proxy.script_path with "-recorder.js">`. Tracker and recorder requests are forwarded below `proxy.api_endpoint`; `/stats-api/send` is forwarded to Umami's `/api/send`. The defaults use `/stats.js` and `/stats-api/`; change them if either path conflicts with a route on your site. `proxy.cache_ttl` sets the server-side script cache lifetime in seconds (0 disables it).
 
