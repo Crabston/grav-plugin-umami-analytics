@@ -1,7 +1,9 @@
 # v2.0.0
-##  _unreleased_
+##  04-11-2026
 1. [](#new)
    - add Umami Proxy to bypass ad & tracking blockers
+   - view Analytics Dara directly in Admin Panel
+   - changed License to GPLv3
 
 # v1.1.0
 ##  28-05-2024
