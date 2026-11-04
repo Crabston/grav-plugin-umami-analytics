@@ -51,7 +51,7 @@ if (!customElements.get(tag)) {
 				if (!response.ok) {
 					throw new Error(result.detail || result.message || result.error?.detail || result.error?.message || "Unable to load Umami analytics.");
 				}
-				if (!result.data?.configured) {
+				if (result.data?.configured === false) {
 					this.renderMessage("Configure the Umami API token in Plugins → Umami Analytics to display statistics.");
 					return;
 				}
