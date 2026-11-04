@@ -170,6 +170,7 @@ class UmamiAnalyticsPlugin extends Plugin {
 
 		$options = [
 			'loading' => 'defer',
+			'pipeline' => false,
 			'data-website-id' => $this->websiteId,
 			'data-auto-track' => $this->disableAutoTrack,
 			'data-domains' => $this->domains,
@@ -189,6 +190,7 @@ class UmamiAnalyticsPlugin extends Plugin {
 				: $this->scriptSrc . '/recorder.js';
 			$recorderOptions = [
 				'loading' => 'defer',
+				'pipeline' => false,
 				'data-website-id' => $this->websiteId,
 			];
 			if ($this->proxyEnabled) {
