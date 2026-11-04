@@ -1,7 +1,7 @@
 name: Umami Analytics
 slug: umami-analytics
 type: plugin
-version: 2.0.0
+version: 2.0.1
 description: This Grav plugin adds [Umami](https://umami.is/) tracking to a site. It can serve the tracker through a same-origin proxy and, with Grav Admin2, display an analytics dashboard inside the admin panel.
 icon: chart-line
 author:

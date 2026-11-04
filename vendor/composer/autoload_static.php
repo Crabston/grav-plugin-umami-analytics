@@ -7,14 +7,14 @@ namespace Composer\Autoload;
 class ComposerStaticInit75ff3400e758ee637482b999ae65a0a3
 {
     public static $prefixLengthsPsr4 = array (
-        'G' => 
+        'G' =>
         array (
             'Grav\\Plugin\\UmamiAnalytics\\' => 27,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Grav\\Plugin\\UmamiAnalytics\\' => 
+        'Grav\\Plugin\\UmamiAnalytics\\' =>
         array (
             0 => __DIR__ . '/../..' . '/classes',
         ),
