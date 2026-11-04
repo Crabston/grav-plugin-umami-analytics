@@ -6,6 +6,7 @@ use Composer\Autoload\ClassLoader;
 use Grav\Common\HTTP\Response as HttpResponse;
 use Grav\Common\Plugin;
 use Grav\Common\Processors\Events\RequestHandlerEvent;
+use Grav\Common\Uri;
 use Grav\Framework\Psr7\Response;
 use Grav\Plugin\UmamiAnalytics\Api\DashboardController;
 use Psr\Http\Message\ServerRequestInterface;
@@ -309,8 +310,8 @@ class UmamiAnalyticsPlugin extends Plugin {
 			}
 		}
 
-		$clientIp = $request->getServerParams()['REMOTE_ADDR'] ?? '';
-		if ($clientIp !== '') {
+		$clientIp = Uri::ip();
+		if ($clientIp !== 'UNKNOWN') {
 			$headers['X-Forwarded-For'] = $clientIp;
 		}
 

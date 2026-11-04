@@ -5,13 +5,13 @@ en:
       DESCRIPTION: Source URL of the Umami script
     WEBSITE_ID:
       LABEL: Website ID
-      DESCRIPTION: The ID of your website
+      DESCRIPTION: The ID of your website. A Grav environment config override takes precedence when set.
     API_BASE_URL:
       LABEL: Umami API URL
       HELP: Optional API root. Leave blank for a self-hosted server using script_src plus /api, or enter https://api.umami.is/v1 for Umami Cloud.
     API_TOKEN:
       LABEL: Umami API token
-      HELP: Create a read-only Umami API key for this website. The token stays on the server and is not sent to Admin2.
+      HELP: Create a read-only Umami API key for this website. The token stays on the server and is not sent to Admin2. A Grav environment config override takes precedence when set.
     DISABLE_AUTO_TRACK:
       LABEL: Auto Track
       HELP: "By default, Umami tracks all pageviews and events for you automatically. You can disable this behavior and track events yourself using the [tracker functions](https://umami.is/docs/tracker-functions)."
@@ -50,13 +50,13 @@ de:
       DESCRIPTION: Quell-URL des Umami-Skripts
     WEBSITE_ID:
       LABEL: Website ID
-      DESCRIPTION: Die ID Ihrer Website
+      DESCRIPTION: Die ID Ihrer Website. Eine Grav Konfigurationsüberschreibung aus der Umgebung hat Vorrang, wenn gesetzt.
     API_BASE_URL:
       LABEL: Umami API URL
       HELP: Optionale API-Basis-URL. Leer lassen für einen selbst gehosteten Server (script_src plus /api) oder https://api.umami.is/v1 für Umami Cloud eintragen.
     API_TOKEN:
       LABEL: Umami API-Token
-      HELP: Einen schreibgeschützten Umami-API-Schlüssel für diese Website erstellen. Das Token bleibt auf dem Server und wird nicht an Admin2 gesendet.
+      HELP: Einen schreibgeschützten Umami-API-Schlüssel für diese Website erstellen. Das Token bleibt auf dem Server und wird nicht an Admin2 gesendet. Eine Grav Konfigurationsüberschreibung aus der Umgebung hat Vorrang, wenn gesetzt.
     DISABLE_AUTO_TRACK:
       LABEL: Auto Track
       HELP: "Standardmässig verfolgt Umami automatisch alle Seitenaufrufe und Ereignisse für Sie. Sie können dieses Verhalten deaktivieren und Ereignisse mithilfe der [Tracker-Funktionen](https://umami.is/docs/tracker-functions) selbst verfolgen."
