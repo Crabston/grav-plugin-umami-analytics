@@ -1,86 +1,129 @@
-# Umami Analytics Plugin
+# Umami Analytics for Grav
 
-The **Umami Analytics** Plugin is an extension for [Grav CMS](https://github.com/getgrav/grav) for adding [Umami Analytics](https://umami.is/) to your site
+[![Grav plugin](https://img.shields.io/badge/Grav-plugin-4B7BEC?logo=grav&logoColor=white)](https://getgrav.org/)
+[![Latest release](https://img.shields.io/github/v/release/Crabston/grav-plugin-umami-analytics?sort=semver)](https://github.com/Crabston/grav-plugin-umami-analytics/releases/latest)
+[![License](https://img.shields.io/github/license/Crabston/grav-plugin-umami-analytics)](LICENSE)
+
+This Grav plugin adds [Umami](https://umami.is/) tracking to a site. It can serve the tracker through a same-origin proxy and, with Grav Admin2, display an analytics dashboard inside the admin panel.
+
+## Features
+
+- Adds Umami's tracker to the site, with optional domain filtering, Do Not Track support, performance metrics, and session recording.
+- Optionally proxies the tracker script and its supported event requests through the Grav site. This can help when browser extensions block third-party analytics requests.
+- Adds an optional Admin2 dashboard with summary statistics, pageviews over time, and top pages, referrers, countries, browsers, operating systems, and devices.
+- Keeps the Umami API token on the server; it is not sent to the browser.
+
+## Requirements
+
+- Grav **2.0.0 or later**.
+- An Umami website and its website ID.
+- For the Admin2 dashboard only: the Grav API and Admin2 plugins, plus an Umami API key with read access to that website.
 
 ## Installation
 
-Installing the Umami Analytics plugin can be done in one of three ways: The GPM (Grav Package Manager) installation method lets you quickly install the plugin with a simple terminal command, the manual method lets you do so via a zip file, and the admin method lets you do so via the Admin Plugin.
+### GPM
 
-### GPM Installation (Preferred)
+From the root of your Grav installation, run:
 
-To install the plugin via the [GPM](https://learn.getgrav.org/cli-console/grav-cli-gpm), through your system's terminal (also called the command line), navigate to the root of your Grav-installation, and enter:
+```sh
+bin/gpm install umami-analytics
+```
 
-    bin/gpm install umami-analytics
+### Admin
 
-This will install the Umami Analytics plugin into your `/user/plugins`-directory within Grav. Its files can be found under `/your/site/grav/user/plugins/umami-analytics`.
+In Grav Admin, open **Plugins**, select **Add**, and install **Umami Analytics**.
 
-### Manual Installation
+### Manual
 
-To install the plugin manually, download the zip-version of this repository and unzip it under `/your/site/grav/user/plugins`. Then rename the folder to `umami-analytics`. You can find these files on [GitHub](https://github.com/crabston/grav-plugin-umami-analytics) or via [GetGrav.org](https://getgrav.org/downloads/plugins).
-
-You should now have all the plugin files under
-
-    /your/site/grav/user/plugins/umami-analytics
-	
-### Admin Plugin
-
-If you use the Admin Plugin, you can install the plugin directly by browsing the `Plugins`-menu and clicking on the `Add` button.
+Download or clone this repository into `user/plugins/umami-analytics`. The plugin files should be in that directory (not in an additional nested directory).
 
 ## Configuration
 
-Before configuring this plugin, you should copy the `user/plugins/umami-analytics/umami-analytics.yaml` to `user/config/plugins/umami-analytics.yaml` and only edit that copy.
-
-Here is the default configuration and an explanation of available options:
-
-```yaml
-enabled: true                      # Enable or disable the plugin
-script_src: 'https://us.umami.is'  # Source URL of the Umami script
-website_id: null                   # ID of the website
-api_base_url: null                 # Umami API root (self-hosted defaults to script_src/api)
-api_token: null                    # Read-only Umami API key/token (keep private)
-disable_auto_track: false          # Disable auto tracking
-domains: null                      # Domains to track
-enable_localhost: false            # Enable tracking on localhost
-doNotTrack: true                   # Honor the browser Do Not Track signal
-performance: false                 # Collect page performance metrics
-recorder: false                    # Proxy recorder.js for session recording
-proxy:
-  enable: true                     # Enable the proxy
-  script_path: stats.js            # Path to the tracker script 
-  api_endpoint: /stats-api/        # API endpoint for proxy requests 
-  cache_ttl: 3600                  # Cache lifetime for proxied scripts in seconds 
-```
-
-**The fields `script_src` and `website_id` are required.**
-
-To display analytics inside **Grav Admin2**, set `api_token` to a read-only Umami API key/token. The plugin adds an **Umami Analytics** page with statistics, pageviews over time, and top pages, referrers, countries, browsers, operating systems, and devices. The API token stays on the server and is not sent to Admin2. The page requires the Grav API and Admin2 plugins to be installed and enabled, plus Node.js 20+ available to PHP and PHP's `proc_open` enabled.
-
-Install the included Node dependency in the plugin's `node/` directory:
+Copy the default configuration to Grav's user configuration directory, then edit the copy:
 
 ```sh
-cd user/plugins/umami-analytics/node
-npm ci
+cp user/plugins/umami-analytics/umami-analytics.yaml \
+   user/config/plugins/umami-analytics.yaml
 ```
 
-For self-hosted Umami, leave `api_base_url` blank to use `<script_src>/api`. For Umami Cloud, set it to `https://api.umami.is/v1`. Create an Umami API key with read-only access to the configured website.
+Alternatively, configure the plugin in Grav Admin under **Plugins → Umami Analytics**. Grav saves the settings to `user/config/plugins/umami-analytics.yaml`.
 
-To configure the credentials through Grav's environment overrides, set `GRAV_CONFIG=1`, `GRAV_CONFIG_ALIAS__DASH=-`, `GRAV_CONFIG__plugins__umami_DASH_analytics__website_id=...`, and `GRAV_CONFIG__plugins__umami_DASH_analytics__api_token=...`. Grav maps the `__` separators to config-path dots, and the `DASH` alias represents the hyphen in `umami-analytics`. These environment overrides take precedence over `website_id` and `api_token` in the plugin config; when omitted, the plugin config values are used. Grav loads `.env` by default. To load a differently named environment file such as `.grav.env`, set the server-side `GRAV_ENV_PATH` variable to that file's path before PHP starts (preferably outside the public web root).
+At minimum, set `website_id` to the website ID from Umami. `script_src` is the Umami server's base URL; use the URL shown for your website in Umami. The default is `https://us.umami.is`. Ensure the plugin is enabled in Grav Admin or in its YAML configuration.
 
-Note that if you use the Admin Plugin, a file with your configuration named umami-analytics.yaml will be saved in the `user/config/plugins/`-folder once the configuration is saved in the Admin.
+```yaml
+enabled: true
+script_src: 'https://us.umami.is'
+website_id: '00000000-0000-0000-0000-000000000000'
+api_base_url: null
+api_token: null
+disable_auto_track: false
+domains: null
+enable_localhost: false
+doNotTrack: true
+performance: false
+recorder: false
+proxy:
+  enable: true
+  script_path: stats.js
+  api_endpoint: /stats-api/
+  cache_ttl: 3600
+```
 
-## Usage
+### Configuration reference
 
-The plugin will inject the Umami Analytics script into your site's `<head>` tag. You can verify this by inspecting the source code of your site.
+| Setting | Default | Description |
+|---|---|---|
+| `enabled` | `true` | Enables the plugin. |
+| `script_src` | `https://us.umami.is` | Umami server base URL, without a trailing slash. Required. |
+| `website_id` | `null` | Website ID from the Umami dashboard. Required. |
+| `api_base_url` | `null` | Optional API root used by the Admin2 dashboard. For Umami Cloud, use `https://api.umami.is/v1`. When blank, the plugin uses `<script_src>/api`, suitable for self-hosted Umami. |
+| `api_token` | `null` | Read-only Umami API key used by the Admin2 dashboard. Keep it private. |
+| `disable_auto_track` | `false` | Disable Umami's automatic pageview and event tracking if you intend to use Umami's tracker functions to send events yourself. |
+| `domains` | `null` | Optional comma-separated list of domains on which Umami should track. |
+| `enable_localhost` | `false` | Allow tracking on `localhost` and `127.0.0.1`, useful for development. |
+| `doNotTrack` | `true` | Pass the browser's Do Not Track signal to Umami so tracking is suppressed when the visitor enables it. |
+| `performance` | `false` | Enable Umami performance metrics. |
+| `recorder` | `false` | Load Umami's separate `recorder.js` script. Session recording must also be enabled for the website in Umami. |
+| `proxy.enable` | `true` | Serve the tracker and forward supported tracking requests through this Grav site. |
+| `proxy.script_path` | `stats.js` | Local tracker URL. Must be a relative `.js` path using letters, numbers, underscores, and hyphens. |
+| `proxy.api_endpoint` | `/stats-api/` | Root-relative local endpoint for proxied tracker requests. Must use letters, numbers, underscores, and hyphens. |
+| `proxy.cache_ttl` | `3600` | Number of seconds to cache the upstream tracker scripts on the server. Set to `0` to disable this cache. |
 
-After you've added your website to Umami, set `script_src` and `website_id` in the plugin configuration. You can find these values in the Umami dashboard.
+If the proxy is enabled, the tracker is served from `<your-site>/<proxy.script_path>` and its requests use `<your-site><proxy.api_endpoint>`. With the defaults, these are `/stats.js` and `/stats-api/`. If `recorder` is enabled, the recorder script is served from `stats-recorder.js` (or the configured script path with `-recorder.js` in place of `.js`). Change the paths if they conflict with routes on your site.
 
-- `script_src` is the URL of your Umami server, e.g. `https://us.umami.is`.
-- `website_id` is the ID of your website, e.g. `76e4f3db-8fec-47ad-82ba-f5O21cOac915`.
-- `api_base_url` optionally overrides the API root URL. The [Umami API client](https://docs.umami.is/docs/api/api-client) defaults to `https://api.umami.is/v1` for Umami Cloud and uses `https://your-umami.example.com/api` for self-hosted servers.
-- `api_token` is an Umami API key or login token. Store it in Grav's private plugin configuration; never put it in the browser or a public source repository.
+Set `proxy.enable: false` to load the tracker directly from `<script_src>/script.js`. This disables the same-origin tracking proxy; the Admin2 dashboard still uses the server-side Umami API.
 
-The proxy serves the tracker at `<site>/<proxy.script_path>` and, when `recorder` is enabled, serves `recorder.js` separately at `<site>/<proxy.script_path with "-recorder.js">`. Tracker and recorder requests are forwarded below `proxy.api_endpoint`; `/stats-api/send` is forwarded to Umami's `/api/send`. The defaults use `/stats.js` and `/stats-api/`; change them if either path conflicts with a route on your site. `proxy.cache_ttl` sets the server-side script cache lifetime in seconds (0 disables it).
+## Admin2 dashboard
 
-The proxy forwards the visitor IP to Umami using Grav's `Uri::ip()` resolution and replaces any incoming `X-Forwarded-For` value. If Grav is behind a reverse proxy, enable `system.http_x_forwarded.ip` only when your proxy securely sets or overwrites `X-Forwarded-For`; otherwise Grav will use the direct connection address. Grav's `system.reverse_proxy_setup` setting controls URL generation for reverse-proxy deployments and does not enable forwarded-IP trust.
+The dashboard is optional and does not need to be configured to use site tracking. To enable it:
 
-`doNotTrack` maps to Umami's `data-do-not-track` setting; when enabled, Umami suppresses tracking for visitors whose browser signals Do Not Track. `performance` enables Umami performance metrics, and `recorder` loads the separate recording script. Session recording must also be enabled for the website in the Umami dashboard.
+1. Install and enable Grav's **API** and **Admin2** plugins.
+2. Set `website_id` to the Umami website ID.
+3. Create a read-only Umami API key with access to that website and set it as `api_token`.
+4. Set `api_base_url` if the default `<script_src>/api` is not your Umami API root. For Umami Cloud, use `https://api.umami.is/v1`.
+5. In Admin2, open **Umami Analytics**. Select a 7-, 30-, or 90-day range.
+
+The dashboard fetches summary statistics, daily pageviews, and up to ten rows for each top metric. Its responses are cached for 60 seconds by default. To change the dashboard cache lifetime, set `dashboard_cache_ttl` in the plugin configuration (seconds; use `0` to disable caching).
+
+If the dashboard says it is not configured, check that both `website_id` and `api_token` are set. If requests fail, verify the API URL, token permissions, and website ID, and check Grav's server logs.
+
+## Keeping credentials private
+
+Do not put `api_token` in a public repository or browser-side configuration. Store it in `user/config/plugins/umami-analytics.yaml` with appropriate file permissions, or provide it through Grav's environment configuration. For example, add these values to Grav's `.env` file or export them in the PHP process environment:
+
+```sh
+GRAV_CONFIG=1
+GRAV_CONFIG_ALIAS__DASH=-
+GRAV_CONFIG__plugins__umami_DASH_analytics__website_id=00000000-0000-0000-0000-000000000000
+GRAV_CONFIG__plugins__umami_DASH_analytics__api_token=your-read-only-api-key
+```
+
+The `DASH` alias maps the hyphen in `umami-analytics`; `__` separates configuration path components. Environment overrides take precedence over values in the plugin YAML. Grav loads `.env` by default. To load another environment file, set the server-side `GRAV_ENV_PATH` variable before PHP starts; keep that file outside the public web root.
+
+## Visitor IP and reverse proxies
+
+The tracking proxy forwards the visitor IP to Umami using Grav's `Uri::ip()` resolution and replaces any incoming `X-Forwarded-For` header. If Grav is behind a reverse proxy, trust forwarded IPs only when that proxy securely sets or overwrites `X-Forwarded-For`; configure `system.http_x_forwarded.ip` accordingly. `system.reverse_proxy_setup` affects URL generation but does not enable forwarded-IP trust.
+
+## License
+
+This plugin is distributed under the [GNU General Public License v3.0](LICENSE).

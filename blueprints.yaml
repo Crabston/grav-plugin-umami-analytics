@@ -2,14 +2,14 @@ name: Umami Analytics
 slug: umami-analytics
 type: plugin
 version: 2.0.0
-description: Grav plugin for adding Umami Analytics to your site
+description: This Grav plugin adds [Umami](https://umami.is/) tracking to a site. It can serve the tracker through a same-origin proxy and, with Grav Admin2, display an analytics dashboard inside the admin panel.
 icon: chart-line
 author:
   name: Crabston GmbH
   email: contact@crabston.dev
   url: https://crabston.dev
 homepage: https://github.com/Crabston/grav-plugin-umami-analytics
-demo: https://grav.demo.crabston.dev
+demo: https://usehadron.dev/
 keywords: grav, plugin, analytics, umami
 bugs: https://github.com/Crabston/grav-plugin-umami-analytics/issues
 docs: https://github.com/Crabston/grav-plugin-umami-analytics/blob/main/README.md
