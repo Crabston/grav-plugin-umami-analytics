@@ -19,8 +19,10 @@ if (!customElements.get(tag)) {
 					.message {
 						display: flex;
 						min-height: 12rem;
+						flex-direction: column;
 						align-items: center;
 						justify-content: center;
+						gap: 1rem;
 						padding: 2rem;
 						border: 1px dashed var(--border, #d4d4d8);
 						border-radius: 0.75rem;
@@ -29,10 +31,22 @@ if (!customElements.get(tag)) {
 						text-align: center;
 					}
 					.error { color: var(--destructive, #dc2626); }
+					.spinner {
+						width: 2rem;
+						height: 2rem;
+						border: 3px solid var(--border, #d4d4d8);
+						border-top-color: var(--primary, #2563eb);
+						border-radius: 50%;
+						animation: spin 0.6s linear infinite;
+					}
+					@keyframes spin { to { transform: rotate(360deg); } }
 				</style>
-				<div class="message${isError ? " error" : ""}" role="${isError ? "alert" : "status"}"></div>
+				<div class="message${isError ? " error" : ""}" role="${isError ? "alert" : "status"}">
+					${!isError ? '<div class="spinner"></div>' : ''}
+					<span></span>
+				</div>
 			`;
-			this.shadowRoot.querySelector(".message").textContent = message;
+			this.shadowRoot.querySelector(".message span").textContent = message;
 		}
 
 		async loadDashboard() {
